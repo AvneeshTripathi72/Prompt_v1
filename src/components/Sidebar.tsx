@@ -21,7 +21,7 @@ import { motion } from "framer-motion";
 const menuItems = [
   { icon: Home, label: "Home", href: "/" },
   { icon: Search, label: "Explore", href: "/explore" },
-  { icon: PlusCircle, label: "Sell Prompt", href: "/sell" },
+  { icon: PlusCircle, label: "Add Prompt", href: "/sell" },
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
   { icon: ShoppingBag, label: "My Purchases", href: "/purchases" },
   { icon: Wallet, label: "Wallet", href: "/wallet" },
@@ -29,6 +29,8 @@ const menuItems = [
 
 export const Sidebar = () => {
   const pathname = usePathname();
+
+  if (pathname === "/auth") return null;
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-background/95 backdrop-blur-xl border-r border-white/5 z-50 hidden lg:flex flex-col p-6 shadow-2xl overflow-y-auto scrollbar-hide">
@@ -68,23 +70,11 @@ export const Sidebar = () => {
             )} />
             <span className="font-black text-sm tracking-tight uppercase tracking-[0.05em]">{item.label}</span>
             
-            {/* Hover Shine Effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-skyblue/0 via-skyblue/10 to-skyblue/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
           </Link>
         ))}
       </nav>
 
-      <div className="mt-auto pb-4 shrink-0">
-
-        <div className="pt-8 border-t border-white/5 flex flex-col gap-3">
-          <Link href="/settings" className="flex items-center gap-4 px-5 py-3 text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-skyblue transition-colors">
-            <Settings className="w-4 h-4" /> Config
-          </Link>
-          <button className="flex items-center gap-4 px-5 py-3 text-xs font-black uppercase tracking-widest text-crimson/60 hover:text-crimson transition-colors">
-            <LogOut className="w-4 h-4" /> Shutdown
-          </button>
-        </div>
-      </div>
     </aside>
   );
 };

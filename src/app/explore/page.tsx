@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Search, SlidersHorizontal, ChevronDown, Star } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, SlidersHorizontal, ChevronDown, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PromptCard } from "@/components/prompt/PromptCard";
-import { prompts, users } from "@/lib/dummyData";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { useEffect, Suspense } from "react";
 
-const CATEGORIES = ["All", "Design", "Development", "Marketing", "Writing", "Photography"];
+const CATEGORIES = ["All", "Marketing", "Development", "Design", "Writing"];
 const PLATFORMS = ["ChatGPT", "Midjourney", "Claude", "Stable Diffusion"];
 
 function ExploreContent() {
@@ -31,24 +31,59 @@ function ExploreContent() {
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [minRating, setMinRating] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState("Newest First");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showFilters, setShowFilters] = useState(false);
+  const ITEMS_PER_PAGE = 9;
 
-  const filteredPrompts = prompts.filter(p => {
+  const [prompts, setPrompts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPrompts = async () => {
+      try {
+        const res = await fetch("/api/prompts");
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setPrompts(data);
+        } else {
+          setPrompts([]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch prompts:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPrompts();
+  }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [q, priceRange, activeCategory, selectedPlatforms, minRating, sortBy]);
+
+  const filteredPrompts = (Array.isArray(prompts) ? prompts : []).filter(p => {
     const matchesSearch = q === "" || 
       p.title.toLowerCase().includes(q.toLowerCase()) || 
       p.tagline.toLowerCase().includes(q.toLowerCase());
-    const matchesCategory = activeCategory === "All" || p.category === activeCategory;
-    const matchesPlatform = selectedPlatforms.length === 0 || selectedPlatforms.includes(p.platform);
-    const matchesPrice = p.price >= priceRange[0] && p.price <= priceRange[1];
-    const matchesRating = minRating === null || p.rating >= minRating;
+    const matchesCategory = activeCategory === "All" || p.category?.toLowerCase() === activeCategory.toLowerCase();
+    const matchesPlatform = selectedPlatforms.length === 0 || selectedPlatforms.some(sp => sp.toLowerCase() === p.platform?.toLowerCase());
+    const matchesPrice = (p.price || 0) >= priceRange[0] && (p.price || 0) <= priceRange[1];
+    const matchesRating = minRating === null || (p.rating || 5) >= minRating;
     
     return matchesSearch && matchesCategory && matchesPlatform && matchesPrice && matchesRating;
   }).sort((a, b) => {
+    if (sortBy === "Newest First") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     if (sortBy === "Price: Low to High") return a.price - b.price;
     if (sortBy === "Price: High to Low") return b.price - a.price;
-    // Default or "Newest" (mocking by sales/rating for now as there's no date)
-    if (sortBy === "Most Purchased") return b.sales - a.sales;
+    if (sortBy === "Most Purchased") return (b.sales || 0) - (a.sales || 0);
     return 0;
   });
+
+  const totalPages = Math.ceil(filteredPrompts.length / ITEMS_PER_PAGE);
+  const paginatedPrompts = filteredPrompts.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   const togglePlatform = (platform: string) => {
     setSelectedPlatforms(prev => 
@@ -62,182 +97,256 @@ function ExploreContent() {
     setSelectedPlatforms([]);
     setMinRating(null);
     setSortBy("Newest First");
+    setCurrentPage(1);
   };
 
   return (
     <div className="container mx-auto px-6 pt-10 pb-16 max-w-7xl">
-      <div className="flex flex-col gap-12">
+      <div className="space-y-12">
+        <div className="glass-card p-10 rounded-[3rem] border-white/5 shadow-3xl space-y-10">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">
+            <div className="space-y-4">
+              <h1 className="text-5xl md:text-6xl font-black tracking-tighter leading-none">
+                Explore <span className="text-gradient">Logic</span>
+              </h1>
+              <div className="flex items-center gap-4">
+                <Button 
+                  onClick={() => setShowFilters(!showFilters)}
+                  className={cn(
+                    "h-12 rounded-2xl px-8 gap-3 font-black uppercase tracking-widest text-[10px] transition-all duration-500 shadow-2xl",
+                    showFilters 
+                      ? "bg-crimson text-white shadow-crimson/20" 
+                      : "bg-white text-black hover:bg-white/90 shadow-white/10"
+                  )}
+                >
+                  <SlidersHorizontal className={cn("w-4 h-4", showFilters ? "animate-spin-slow" : "")} /> 
+                  {showFilters ? "Close Filters" : "Filter Logic"}
+                </Button>
+                <div className="h-4 w-px bg-white/10 hidden md:block" />
+                <p className="text-muted-foreground font-bold text-xs uppercase tracking-widest opacity-60 hidden md:block">
+                  {filteredPrompts.length} Available
+                </p>
+              </div>
+            </div>
+            
+            <Tabs value={activeCategory} className="w-full lg:w-fit">
+              <TabsList className="bg-white/5 border border-white/10 p-1.5 h-16 rounded-[2rem] flex overflow-x-auto scrollbar-hide backdrop-blur-3xl shadow-2xl">
+                {CATEGORIES.map((cat) => (
+                  <TabsTrigger 
+                    key={cat} 
+                    value={cat}
+                    className="rounded-3xl data-[state=active]:bg-skyblue data-[state=active]:text-white px-8 font-black text-[10px] uppercase tracking-widest transition-all duration-500"
+                    onClick={() => setActiveCategory(cat)}
+                  >
+                    {cat}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </div>
 
-        <div className="flex flex-col lg:flex-row gap-12 pt-4">
-          {/* Sidebar Filters */}
-          <aside className="lg:w-72 space-y-10 sticky top-28 h-fit">
-            <div className="glass-card p-8 rounded-[2rem] border-white/5 shadow-2xl space-y-8">
-              <h3 className="text-lg font-black tracking-tight flex items-center gap-3">
-                <SlidersHorizontal className="w-5 h-5 text-skyblue" /> Filters
-              </h3>
-              
-              <div className="space-y-10">
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Platforms</label>
-                  <div className="grid grid-cols-1 gap-3">
-                    {PLATFORMS.map((platform) => (
-                      <div 
-                        key={platform} 
-                        className="flex items-center gap-3 cursor-pointer group"
-                        onClick={() => togglePlatform(platform)}
-                      >
-                        <div className={cn(
-                          "w-5 h-5 rounded-lg border-2 transition-all flex items-center justify-center p-1",
-                          selectedPlatforms.includes(platform) 
-                            ? "bg-skyblue border-skyblue text-white rotate-0" 
-                            : "border-white/10 group-hover:border-skyblue/50 bg-white/5"
-                        )}>
-                          {selectedPlatforms.includes(platform) && <Check className="w-4 h-4" strokeWidth={4} />}
-                        </div>
-                        <span className={cn(
-                          "text-sm font-semibold transition-colors",
-                          selectedPlatforms.includes(platform) ? "text-skyblue" : "group-hover:text-skyblue"
-                        )}>{platform}</span>
+          <AnimatePresence>
+            {showFilters && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="pt-10 space-y-12">
+                  <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent w-full" />
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-skyblue animate-pulse" />
+                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Select Platform</label>
                       </div>
-                    ))}
-                  </div>
-                </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        {PLATFORMS.map((platform) => (
+                          <Button
+                            key={platform}
+                            variant="outline"
+                            size="sm"
+                            className={cn(
+                              "rounded-2xl h-12 border-white/5 font-black text-[10px] uppercase tracking-widest transition-all duration-500",
+                              selectedPlatforms.includes(platform) 
+                                ? "bg-skyblue text-white shadow-[0_10px_30px_-10px_rgba(56,189,248,0.5)] border-skyblue scale-105" 
+                                : "bg-white/5 hover:bg-white/10 hover:border-white/20"
+                            )}
+                            onClick={() => togglePlatform(platform)}
+                          >
+                            {platform}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
 
-                <div className="space-y-5">
-                  <div className="flex justify-between items-center">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Price Range</label>
-                    <span className="text-xs font-black text-skyblue bg-skyblue/5 px-2.5 py-1 rounded-lg border border-skyblue/10">{priceRange[0]} - {priceRange[1]}</span>
-                  </div>
-                  <Slider 
-                    value={priceRange} 
-                    max={1000} 
-                    step={10} 
-                    onValueChange={setPriceRange}
-                    className="py-2 cursor-pointer"
-                  />
-                  <p className="text-[10px] text-muted-foreground font-medium text-center">Price measured in coins</p>
-                </div>
-
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Quality Score</label>
-                  <div className="space-y-3">
-                    {[4, 3, 2, 1].map((rating) => (
-                      <div 
-                        key={rating} 
-                        className="flex items-center gap-3 cursor-pointer group"
-                        onClick={() => setMinRating(minRating === rating ? null : rating)}
-                      >
-                        <div className={cn(
-                          "w-5 h-5 rounded-lg border-2 transition-all flex items-center justify-center p-1",
-                          minRating === rating
-                            ? "bg-crimson border-crimson text-white"
-                            : "border-white/10 group-hover:border-skyblue/50 bg-white/5"
-                        )}>
-                          {minRating === rating && <Check className="w-4 h-4" strokeWidth={4} />}
-                        </div>
-                        <span className={cn(
-                          "text-sm font-semibold flex items-center gap-1.5 transition-colors",
-                          minRating === rating ? "text-crimson" : "group-hover:text-skyblue"
-                        )}>
-                          <Star className={cn("w-3.5 h-3.5 fill-current", minRating === rating ? "text-white" : "text-skyblue")} /> {rating}+ Ratings
+                    <div className="space-y-8">
+                      <div className="flex justify-between items-center">
+                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Price (Coins)</label>
+                        <span className="text-skyblue font-black text-xs tracking-tighter bg-skyblue/10 px-3 py-1 rounded-lg">
+                          {priceRange[0]} — {priceRange[1]}
                         </span>
                       </div>
-                    ))}
+                      <div className="px-2">
+                        <Slider 
+                          value={priceRange} 
+                          max={1000} 
+                          step={10} 
+                          onValueChange={setPriceRange}
+                          className="py-4"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Min Star Rating</label>
+                      <div className="flex justify-between gap-3">
+                        {[4, 3, 2, 1].map((rating) => (
+                          <Button
+                            key={rating}
+                            variant="outline"
+                            size="sm"
+                            className={cn(
+                              "rounded-2xl h-12 flex-grow border-white/5 font-black text-sm transition-all duration-500",
+                              minRating === rating 
+                                ? "bg-skyblue text-white border-skyblue shadow-xl scale-110 z-10" 
+                                : "bg-white/5 hover:bg-white/10"
+                            )}
+                            onClick={() => setMinRating(minRating === rating ? null : rating)}
+                          >
+                            {rating}<Star className={cn("w-3 h-3 ml-1", minRating === rating ? "fill-current" : "opacity-30")} />
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Sort By</label>
+                      <div className="flex gap-3">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="h-12 rounded-2xl bg-white/5 border-white/10 gap-3 font-black px-6 flex-grow text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
+                              {sortBy} <ChevronDown className="w-4 h-4 text-skyblue" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent className="glass-panel p-2 rounded-2xl border-white/10 min-w-[240px] z-[100] shadow-3xl">
+                            {["Newest First", "Price: Low to High", "Price: High to Low", "Most Purchased"].map((option) => (
+                              <DropdownMenuItem 
+                                key={option}
+                                className={cn(
+                                  "p-4 rounded-xl font-black text-[10px] uppercase tracking-widest cursor-pointer mb-1 last:mb-0 transition-all",
+                                  sortBy === option ? "bg-skyblue text-white shadow-lg" : "hover:bg-white/10"
+                                )}
+                                onClick={() => setSortBy(option)}
+                              >
+                                {option}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                        <Button 
+                          variant="outline" 
+                          size="icon" 
+                          className="h-12 w-12 rounded-2xl border-white/10 hover:border-crimson hover:text-crimson bg-white/5 transition-all duration-500 group"
+                          onClick={handleReset}
+                        >
+                          <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col items-center gap-6 pt-4">
+                    <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent w-64" />
+                    <Button 
+                      onClick={() => setShowFilters(false)}
+                      className="h-13 px-12 rounded-2xl bg-skyblue text-white font-black uppercase tracking-[0.15em] text-[10px] shadow-[0_10px_30px_-5px_rgba(56,189,248,0.4)] hover:shadow-[0_15px_40px_-5px_rgba(56,189,248,0.6)] hover:scale-105 active:scale-95 transition-all duration-300 group relative overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                      <span className="relative">Show Results</span>
+                    </Button>
                   </div>
                 </div>
-              </div>
-              
-              <Button 
-                variant="outline" 
-                className="w-full h-12 rounded-xl text-xs font-black uppercase tracking-widest border-white/5 hover:border-crimson hover:text-crimson transition-all font-bold group" 
-                onClick={handleReset}
-              >
-                <X className="w-4 h-4 mr-2 group-hover:rotate-90 transition-transform" /> Reset All Filters
-              </Button>
-            </div>
-          </aside>
-
-          {/* Main Content */}
-          <div className="flex-grow space-y-10">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-              <Tabs defaultValue="All" className="w-full sm:w-fit">
-                <TabsList className="bg-white/5 border border-white/5 p-1.5 h-14 rounded-2xl flex overflow-x-auto scrollbar-hide">
-                  {CATEGORIES.map((cat) => (
-                    <TabsTrigger 
-                      key={cat} 
-                      value={cat}
-                      className="rounded-xl data-[state=active]:bg-skyblue data-[state=active]:text-white px-6 font-bold text-sm transition-all shadow-xl"
-                      onClick={() => setActiveCategory(cat)}
-                    >
-                      {cat}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-              </Tabs>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="h-14 rounded-2xl bg-white/5 border-white/5 gap-3 font-bold px-6 shadow-xl">
-                    Sort by <ChevronDown className="w-4 h-4 text-skyblue" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="glass-panel p-2 rounded-xl border-white/10 min-w-[200px] z-[100]">
-                  {["Newest First", "Price: Low to High", "Price: High to Low", "Most Purchased"].map((option) => (
-                    <DropdownMenuItem 
-                      key={option}
-                      className={cn(
-                        "p-3 rounded-lg font-medium cursor-pointer mb-1 last:mb-0",
-                        sortBy === option ? "bg-skyblue text-white" : "hover:bg-white/5 focus:bg-white/5"
-                      )}
-                      onClick={() => setSortBy(option)}
-                    >
-                      {option}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-              {filteredPrompts.map((prompt) => {
-                const user = users.find(u => u.username === prompt.seller);
-                return (
-                  <PromptCard 
-                    key={prompt.id}
-                    id={prompt.id}
-                    title={prompt.title}
-                    tagline={prompt.tagline}
-                    price={prompt.price}
-                    rating={prompt.rating}
-                    platform={prompt.platform}
-                    author={{
-                      username: prompt.seller,
-                      avatar: user?.avatar || `https://i.pravatar.cc/150?u=${prompt.seller}`
-                    }}
-                    previewImage={prompt.images[0]}
-                    promptPreview={prompt.preview.substring(0, 80)}
-                  />
-                );
-              })}
-            </div>
-            
-            {filteredPrompts.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-40 text-center space-y-4">
-                <Search className="w-16 h-16 text-muted-foreground/20" />
-                <div className="space-y-1">
-                  <p className="text-2xl font-black">No matches found</p>
-                  <p className="text-muted-foreground font-medium">Try broadening your search or resetting filters.</p>
-                </div>
-              </div>
+              </motion.div>
             )}
-            
-            {filteredPrompts.length > 0 && (
-              <div className="flex justify-center pt-16 border-t border-white/5">
-                <Button variant="outline" className="h-14 px-12 rounded-full border-white/10 hover:bg-white/5 font-black uppercase tracking-widest text-xs">Load More Engineering</Button>
-              </div>
-            )}
-          </div>
+          </AnimatePresence>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {loading ? (
+            Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-[400px] rounded-[2.5rem] bg-white/5 animate-pulse border border-white/5" />
+            ))
+          ) : (
+            paginatedPrompts.map((prompt: any) => (
+              <PromptCard 
+                key={prompt._id || prompt.id}
+                id={prompt._id || prompt.id}
+                title={prompt.title}
+                tagline={prompt.tagline}
+                price={prompt.price}
+                rating={prompt.rating || 5}
+                platform={prompt.platform}
+                author={{
+                  username: prompt.seller,
+                  avatar: `https://avatar.iran.liara.run/public/boy?username=${prompt.seller}`
+                }}
+                previewImage={prompt.images[0]}
+                promptPreview={prompt.promptText.substring(0, 80)}
+              />
+            ))
+          )}
+        </div>
+        
+        {filteredPrompts.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-40 text-center space-y-4">
+            <Search className="w-16 h-16 text-muted-foreground/20" />
+            <div className="space-y-1">
+              <p className="text-2xl font-black">No matches found</p>
+              <p className="text-muted-foreground font-medium">Try broadening your search or resetting filters.</p>
+            </div>
+          </div>
+        )}
+        
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-4 pt-12">
+            <Button 
+              variant="outline" 
+              className="rounded-xl border-white/5 bg-white/5 h-12 w-12 p-0"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </Button>
+            
+            <div className="flex items-center gap-2">
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <Button
+                  key={i + 1}
+                  variant="outline"
+                  className={cn(
+                    "w-12 h-12 rounded-xl border-white/5 font-black transition-all",
+                    currentPage === i + 1 ? "bg-skyblue border-skyblue text-white shadow-xl" : "bg-white/5"
+                  )}
+                  onClick={() => setCurrentPage(i + 1)}
+                >
+                  {i + 1}
+                </Button>
+              ))}
+            </div>
+
+            <Button 
+              variant="outline" 
+              className="rounded-xl border-white/5 bg-white/5 h-12 w-12 p-0"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            >
+              <ChevronRight className="w-5 h-5" />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

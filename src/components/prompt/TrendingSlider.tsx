@@ -7,25 +7,20 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Prompt, User } from "@/lib/dummyData";
 import { cn } from "@/lib/utils";
 
-interface TrendingSliderProps {
-  prompts: Prompt[];
-  users: User[];
-}
-
-export const TrendingSlider = ({ prompts, users }: TrendingSliderProps) => {
+export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?: any[] }) => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [activeFeaturedIndex, setActiveFeaturedIndex] = useState(0);
 
-  const featuredPrompts = prompts.slice(0, 5);
-  const otherTrending = prompts.slice(5, 15);
+  const safePrompts = Array.isArray(prompts) ? prompts : [];
+  const featuredPrompts = safePrompts.slice(0, 5);
+  const otherTrending = safePrompts.slice(5, 15);
 
-  // Auto-play for featured slider
   useEffect(() => {
+    if (featuredPrompts.length === 0) return;
     const timer = setInterval(() => {
       setActiveFeaturedIndex((prev) => (prev + 1) % featuredPrompts.length);
     }, 5000);
@@ -57,7 +52,6 @@ export const TrendingSlider = ({ prompts, users }: TrendingSliderProps) => {
 
   return (
     <div className="space-y-16">
-      {/* Dynamic Featured Hero Slider */}
       <div className="relative group">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
@@ -65,10 +59,8 @@ export const TrendingSlider = ({ prompts, users }: TrendingSliderProps) => {
               <Flame className="w-6 h-6 text-crimson fill-current" />
             </div>
             <div>
-              <h2 className="text-4xl font-black tracking-tighter italic uppercase underline decoration-crimson/30 underline-offset-8">Featured Core</h2>
-              <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.3em] mt-2 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-crimson animate-pulse" /> Auto-cycle active | {activeFeaturedIndex + 1} of {featuredPrompts.length}
-              </p>
+              <h2 className="text-4xl font-black tracking-tight flex items-center gap-3">Trending <span className="text-crimson">Logic</span></h2>
+              <p className="text-sm text-muted-foreground font-medium uppercase tracking-widest opacity-50">Hot Architectures This Minute</p>
             </div>
           </div>
 
@@ -92,78 +84,76 @@ export const TrendingSlider = ({ prompts, users }: TrendingSliderProps) => {
           </div>
         </div>
 
-        <Link href={`/prompt/${currentFeatured.id}`}>
-          <motion.div
-            key={currentFeatured.id}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
-            <Card className="glass-card group/card overflow-hidden rounded-[3rem] h-[600px] flex flex-col md:flex-row relative premium-shadow border-white/5 hover:border-skyblue/30 transition-all duration-700">
-              <div className="absolute top-10 left-10 z-30">
-                <div className="w-20 h-20 bg-crimson rounded-3xl flex items-center justify-center border-4 border-white/10 font-black text-5xl text-white shadow-2xl animate-float">
-                  {activeFeaturedIndex + 1}
-                </div>
-              </div>
-
-              {/* Slider Dots */}
-              <div className="absolute bottom-10 right-10 z-30 flex gap-2">
-                {featuredPrompts.map((_, i) => (
-                  <button 
-                    key={i}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveFeaturedIndex(i);
-                    }}
-                    className={cn(
-                      "h-1.5 rounded-full transition-all duration-500",
-                      i === activeFeaturedIndex ? "w-8 bg-crimson" : "w-1.5 bg-white/20 hover:bg-white/40"
-                    )}
-                  />
-                ))}
-              </div>
-
-              {/* Large Image Section */}
-              <div className="md:w-3/5 relative h-full bg-muted overflow-hidden">
-                <img 
-                  src={currentFeatured.images[0]} 
-                  alt={currentFeatured.title} 
-                  className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-[2000ms] cubic-bezier(0.4, 0, 0.2, 1)"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-background/0 via-background/0 to-background hidden md:block" />
-                <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent md:hidden" />
-                
-                <div className="absolute bottom-10 left-10 flex gap-4">
-                  <Badge className="bg-skyblue text-black font-black px-6 py-2 rounded-xl text-xs uppercase tracking-widest">{currentFeatured.platform}</Badge>
-                  <Badge className="bg-white/10 backdrop-blur-xl border-white/10 text-white font-black px-6 py-2 rounded-xl text-xs uppercase tracking-widest">Verified Logic</Badge>
-                </div>
-              </div>
-
-              {/* Large Content Section */}
-              <div className="md:w-2/5 p-12 md:p-16 flex flex-col justify-center gap-8 relative z-10 bg-background/50 backdrop-blur-3xl md:bg-transparent">
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3">
-                    <Star className="w-5 h-5 text-crimson fill-current" />
-                    <span className="text-sm font-black uppercase tracking-[0.2em] text-crimson">Elite Status</span>
+        {currentFeatured && (
+          <Link href={`/prompt/${currentFeatured.id || currentFeatured._id}`}>
+            <motion.div
+              key={currentFeatured.id || currentFeatured._id}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <Card className="glass-card group/card overflow-hidden rounded-[3rem] h-[600px] flex flex-col md:flex-row relative premium-shadow border-white/5 hover:border-skyblue/30 transition-all duration-700">
+                <div className="absolute top-10 left-10 z-30">
+                  <div className="w-20 h-20 bg-crimson rounded-3xl flex items-center justify-center border-4 border-white/10 font-black text-5xl text-white shadow-2xl animate-float">
+                    {activeFeaturedIndex + 1}
                   </div>
-                  <h3 className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.9] group-hover/card:text-gradient-lavender transition-all duration-500">
-                    {currentFeatured.title}
-                  </h3>
-                  <p className="text-xl text-muted-foreground/80 leading-relaxed font-medium line-clamp-3">
-                    {currentFeatured.tagline}
-                  </p>
                 </div>
 
-                <div className="flex flex-col gap-8 pt-8 border-t border-white/10">
-                  <div className="flex items-center gap-5">
-                    <div className="w-16 h-16 rounded-3xl overflow-hidden border-2 border-skyblue/30 shadow-2xl transform group-hover/card:rotate-12 transition-transform duration-500">
-                      <img 
-                        src={users.find(u => u.username === currentFeatured.seller)?.avatar || `https://i.pravatar.cc/150?u=${currentFeatured.seller}`} 
-                        alt="Avatar" 
-                        className="w-full h-full object-cover"
-                      />
+                <div className="absolute bottom-10 right-10 z-30 flex gap-2">
+                  {featuredPrompts.map((_, i) => (
+                    <button 
+                      key={i}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveFeaturedIndex(i);
+                      }}
+                      className={cn(
+                        "h-1.5 rounded-full transition-all duration-500",
+                        i === activeFeaturedIndex ? "w-8 bg-crimson" : "w-1.5 bg-white/20 hover:bg-white/40"
+                      )}
+                    />
+                  ))}
+                </div>
+
+                <div className="md:w-3/5 relative h-full bg-muted overflow-hidden">
+                  <img 
+                    src={currentFeatured.images?.[0] || 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=1000'} 
+                    alt={currentFeatured.title} 
+                    className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-[2000ms] cubic-bezier(0.4, 0, 0.2, 1)"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-background/0 via-background/0 to-background hidden md:block" />
+                  <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent md:hidden" />
+                  
+                  <div className="absolute bottom-10 left-10 flex gap-4">
+                    <Badge className="bg-skyblue text-black font-black px-6 py-2 rounded-xl text-xs uppercase tracking-widest">{currentFeatured.platform}</Badge>
+                    <Badge className="bg-white/10 backdrop-blur-xl border-white/10 text-white font-black px-6 py-2 rounded-xl text-xs uppercase tracking-widest">Verified Logic</Badge>
+                  </div>
+                </div>
+
+                <div className="md:w-2/5 p-12 md:p-16 flex flex-col justify-center gap-8 relative z-10 bg-background/50 backdrop-blur-3xl md:bg-transparent">
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-3">
+                      <Star className="w-5 h-5 text-crimson fill-current" />
+                      <span className="text-sm font-black uppercase tracking-[0.2em] text-crimson">Elite Status</span>
                     </div>
+                    <h3 className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.9] group-hover/card:text-gradient-lavender transition-all duration-500">
+                      {currentFeatured.title}
+                    </h3>
+                    <p className="text-xl text-muted-foreground/80 leading-relaxed font-medium line-clamp-3">
+                      {currentFeatured.tagline}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col gap-8 pt-8 border-t border-white/10">
+                    <div className="flex items-center gap-5">
+                      <div className="w-16 h-16 rounded-3xl overflow-hidden border-2 border-skyblue/30 shadow-2xl transform group-hover/card:rotate-12 transition-transform duration-500">
+                        <img 
+                          src={`https://avatar.iran.liara.run/public/boy?username=${currentFeatured.seller}`} 
+                          alt="Avatar" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                     <div className="flex flex-col">
                       <span className="text-xl font-black tracking-tight">@{currentFeatured.seller}</span>
                       <span className="text-xs text-muted-foreground font-black uppercase tracking-widest">Genesis Creator</span>
@@ -187,9 +177,9 @@ export const TrendingSlider = ({ prompts, users }: TrendingSliderProps) => {
             </Card>
           </motion.div>
         </Link>
-      </div>
+      )}
+    </div>
 
-      {/* Other Trending Horizontal Scroll */}
       <div className="relative pt-10">
         <div className="flex items-center justify-between mb-8">
           <h3 className="text-2xl font-black tracking-tight uppercase tracking-widest flex items-center gap-3 text-muted-foreground">
@@ -260,7 +250,7 @@ export const TrendingSlider = ({ prompts, users }: TrendingSliderProps) => {
                       <div className="mt-auto flex justify-between items-center pt-6 border-t border-white/5">
                         <div className="flex items-center gap-3">
                           <img 
-                            src={user?.avatar || `https://i.pravatar.cc/150?u=${prompt.seller}`} 
+                            src={`https://avatar.iran.liara.run/public/boy?username=${prompt.seller}`} 
                             alt="Avatar" 
                             className="w-10 h-10 rounded-xl object-cover border border-white/10"
                           />

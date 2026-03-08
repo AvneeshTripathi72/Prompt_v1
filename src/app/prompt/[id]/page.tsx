@@ -8,33 +8,70 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { prompts, users } from "@/lib/dummyData";
+import { useEffect } from "react";
 import { notFound } from "next/navigation";
-import Link from "next/link"; // Added Link import
+import Link from "next/link";
 
 export default function PromptDetailPage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
   const params = React.use(paramsPromise);
-  const prompt = prompts.find(p => p.id === params.id);
+  const [prompt, setPrompt] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [isPurchased, setIsPurchased] = useState(false);
+
+  useEffect(() => {
+    const fetchPrompt = async () => {
+      try {
+        const res = await fetch(`/api/prompts/${params.id}`);
+        if (!res.ok) throw new Error("Prompt not found");
+        const data = await res.json();
+        setPrompt(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPrompt();
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[70vh]">
+        <div className="w-12 h-12 border-4 border-skyblue border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
   
   if (!prompt) {
     return notFound();
   }
 
-  const seller = users.find(u => u.username === prompt.seller);
-  const [isPurchased, setIsPurchased] = useState(false);
+  const handlePurchase = async () => {
+    try {
+      const res = await fetch("/api/prompts/purchase", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ promptId: params.id }),
+      });
 
-  const handlePurchase = () => {
-    // Mock purchase logic
-    toast.success("Prompt purchased successfully!");
-    setIsPurchased(true);
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || "Purchase failed");
+
+      setIsPurchased(true);
+      toast.success(data.message);
+      
+      // Trigger a custom event to update Navbar balance
+      window.dispatchEvent(new Event("balanceUpdate"));
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
 
   return (
     <div className="container mx-auto px-6 py-16 max-w-7xl">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
-        {/* Left: Gallery & Content */}
         <div className="lg:col-span-2 space-y-16">
-          {/* Breadcrumbs */}
           <div className="flex items-center gap-3 text-[10px] uppercase font-black tracking-[0.2em] text-muted-foreground/60">
             <Link href="/explore" className="hover:text-skyblue transition-colors">Explore</Link> 
             <span className="w-1 h-1 rounded-full bg-white/20" /> 
@@ -56,7 +93,6 @@ export default function PromptDetailPage({ params: paramsPromise }: { params: Pr
             </div>
           </div>
 
-          {/* Image Gallery */}
           <div className="grid grid-cols-1 gap-6">
             <div className="aspect-[16/9] w-full rounded-[3rem] overflow-hidden bg-muted relative border border-white/5 shadow-2xl group">
               <img 
@@ -70,7 +106,7 @@ export default function PromptDetailPage({ params: paramsPromise }: { params: Pr
               </div>
             </div>
             <div className="grid grid-cols-4 gap-6">
-              {prompt.images.map((img, i) => (
+              {prompt.images.map((img: string, i: number) => (
                 <div key={i} className="aspect-square rounded-[2rem] overflow-hidden bg-muted cursor-pointer hover:ring-4 ring-skyblue/30 transition-all border border-white/5 shadow-lg group">
                   <img 
                     src={img} 
@@ -82,7 +118,6 @@ export default function PromptDetailPage({ params: paramsPromise }: { params: Pr
             </div>
           </div>
 
-          {/* Prompt Section */}
           <Card className="glass-panel relative overflow-hidden rounded-[3rem] border-white/5 shadow-2xl">
             <div className="p-12 space-y-10">
               <div className="flex justify-between items-center">
@@ -106,10 +141,9 @@ export default function PromptDetailPage({ params: paramsPromise }: { params: Pr
                 {!isPurchased ? (
                   <>
                     <div className="select-none text-muted-foreground/30 italic blur-[2px]">
-                      {prompt.preview.substring(0, 150)}...
-                      {prompt.preview.substring(0, 150)}...
+                      {prompt.promptText.substring(0, 150)}...
+                      {prompt.promptText.substring(0, 150)}...
                     </div>
-                    {/* Blur Mask */}
                     <div className="absolute inset-0 bg-gradient-to-t from-background via-background/95 to-transparent backdrop-blur-md flex flex-col items-center justify-center p-12 text-center gap-8">
                       <div className="w-20 h-20 bg-skyblue/10 rounded-3xl flex items-center justify-center border border-skyblue/20 shadow-2xl relative">
                         <div className="absolute inset-0 bg-skyblue/20 blur-2xl rounded-full" />
@@ -121,7 +155,7 @@ export default function PromptDetailPage({ params: paramsPromise }: { params: Pr
                           Secure this logic engine to gain lifetime access to the full command set.
                         </p>
                       </div>
-                      <Button className="rounded-full px-12 h-14 bg-skyblue text-white hover:bg-skyblue/90 font-black uppercase tracking-widest text-xs shadow-[0_15px_40px_-5px_rgba(56,189,248,0.5)] transition-all hover:scale-105" onClick={handlePurchase}>
+                      <Button className="rounded-[1.25rem] px-10 h-13 bg-skyblue text-white hover:bg-skyblue/90 font-black uppercase tracking-widest text-[10px] shadow-[0_10px_30px_-5px_rgba(56,189,248,0.4)] transition-all hover:scale-105 active:scale-95 duration-300" onClick={handlePurchase}>
                         Unlock Gear for {prompt.price} Coins
                       </Button>
                     </div>
@@ -132,14 +166,13 @@ export default function PromptDetailPage({ params: paramsPromise }: { params: Pr
                     animate={{ opacity: 1, y: 0 }}
                     className="text-foreground leading-relaxed text-base"
                   >
-                    {prompt.preview}
+                    {prompt.promptText}
                   </motion.div>
                 )}
               </div>
             </div>
           </Card>
 
-          {/* Reviews Section */}
           <div className="space-y-10">
             <h2 className="text-3xl font-black tracking-tight">Trust & Feedback</h2>
             <div className="grid gap-8">
@@ -169,7 +202,6 @@ export default function PromptDetailPage({ params: paramsPromise }: { params: Pr
           </div>
         </div>
 
-        {/* Right: Actions Sidebar */}
         <aside className="space-y-10">
           <Card className="glass-panel p-10 rounded-[3rem] sticky top-28 border-white/5 space-y-10 shadow-3xl">
             <div className="space-y-3">
@@ -181,21 +213,21 @@ export default function PromptDetailPage({ params: paramsPromise }: { params: Pr
 
             <div className="space-y-4">
               {!isPurchased ? (
-                <Button className="w-full h-16 rounded-2xl text-base font-black uppercase tracking-widest bg-skyblue text-white hover:bg-skyblue/90 shadow-[0_20px_50px_-10px_rgba(56,189,248,0.5)] transition-all hover:scale-[1.02]" onClick={handlePurchase}>
+                <Button className="w-full h-13 rounded-2xl text-[10px] font-black uppercase tracking-widest bg-skyblue text-white hover:bg-skyblue/90 shadow-[0_10px_30px_-5px_rgba(56,189,248,0.4)] hover:shadow-[0_15px_40px_-5px_rgba(56,189,248,0.6)] transition-all hover:scale-[1.02] active:scale-[0.98]" onClick={handlePurchase}>
                   Acquire Logic
                 </Button>
               ) : (
                 <div className="grid grid-cols-1 gap-4">
-                  <Button className="w-full h-16 rounded-2xl bg-white/5 border border-white/10 hover:bg-skyblue hover:text-white transition-all font-black uppercase tracking-widest text-xs">
-                    <Download className="w-5 h-5 mr-3" /> Download Source
+                  <Button className="w-full h-13 rounded-2xl bg-white/5 border border-white/10 hover:bg-skyblue hover:text-white transition-all font-black uppercase tracking-widest text-[9px] hover:scale-[1.02] active:scale-[0.98]">
+                    <Download className="w-4 h-4 mr-2" /> Download Source
                   </Button>
-                  <Button className="w-full h-16 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-black uppercase tracking-widest text-xs">
-                    <Share2 className="w-5 h-5 mr-3" /> Distribute
+                  <Button className="w-full h-13 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-black uppercase tracking-widest text-[9px] hover:scale-[1.02] active:scale-[0.98]">
+                    <Share2 className="w-4 h-4 mr-2" /> Distribute
                   </Button>
                 </div>
               )}
-              <Button variant="outline" className="w-full h-16 rounded-2xl border-white/5 bg-white/5 hover:bg-white/10 transition-all font-black uppercase tracking-widest text-xs">
-                <Heart className="w-5 h-5 mr-3" /> Save to Vault
+              <Button variant="outline" className="w-full h-13 rounded-2xl border-white/5 bg-white/5 hover:bg-white/10 transition-all font-black uppercase tracking-widest text-[9px] hover:scale-[1.02] active:scale-[0.98]">
+                <Heart className="w-4 h-4 mr-2" /> Save to Vault
               </Button>
             </div>
 
@@ -203,7 +235,7 @@ export default function PromptDetailPage({ params: paramsPromise }: { params: Pr
               <div className="flex items-center gap-5">
                 <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-skyblue/20 p-0.5 shadow-2xl relative group">
                   <div className="absolute inset-0 bg-skyblue/20 animate-pulse" />
-                  <img src={seller?.avatar || `https://i.pravatar.cc/150?u=${prompt.seller}`} alt="Seller" className="w-full h-full object-cover rounded-[calc(1rem-2.5px)] relative z-10" />
+                  <img src={`https://avatar.iran.liara.run/public/boy?username=${prompt.seller}`} alt="Seller" className="w-full h-full object-cover rounded-[calc(1rem-2.5px)] relative z-10" />
                 </div>
                 <div className="space-y-1">
                   <h4 className="font-black text-xl tracking-tight">@{prompt.seller}</h4>
@@ -230,7 +262,6 @@ export default function PromptDetailPage({ params: paramsPromise }: { params: Pr
         </aside>
       </div>
       
-      {/* Mobile Sticky CTA */}
       {!isPurchased && (
         <div className="lg:hidden fixed bottom-0 left-0 right-0 p-6 bg-background/95 backdrop-blur-2xl border-t border-white/5 z-50">
           <Button className="w-full h-16 rounded-2xl text-base font-black uppercase tracking-widest bg-skyblue text-white shadow-[0_-15px_40px_-5px_rgba(56,189,248,0.4)]" onClick={handlePurchase}>

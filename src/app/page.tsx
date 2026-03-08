@@ -7,18 +7,42 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PromptCard } from "@/components/prompt/PromptCard";
 import { ArrowRight, Sparkles, Zap, Shield, Wallet, Star, Flame } from "lucide-react";
-import { prompts, users } from "@/lib/dummyData";
 import { TrendingSlider } from "@/components/prompt/TrendingSlider";
+import { Footer } from "@/components/Footer";
+import { useEffect, useState } from "react";
 
 export default function LandingPage() {
+  const [prompts, setPrompts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPrompts = async () => {
+      try {
+        const res = await fetch("/api/prompts");
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setPrompts(data);
+        } else {
+          setPrompts([]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch prompts:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPrompts();
+  }, []);
   return (
     <div className="flex flex-col gap-32 pb-32">
-      {/* Trending Section */}
       <section className="container mx-auto px-6 overflow-hidden pt-20">
-        <TrendingSlider prompts={prompts} users={users} />
+        {loading ? (
+          <div className="h-[600px] rounded-[3rem] bg-white/5 animate-pulse" />
+        ) : (
+          <TrendingSlider prompts={prompts} />
+        )}
       </section>
 
-      {/* How it Works */}
       <section className="container mx-auto px-6">
         <div className="text-center mb-20 space-y-4">
           <h2 className="text-5xl font-black tracking-tight">Engineered for Results</h2>
@@ -49,7 +73,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Featured Marketplace Preview */}
       <section className="container mx-auto px-6 max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
           <div className="space-y-3">
@@ -63,30 +86,32 @@ export default function LandingPage() {
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {prompts.slice(0, 3).map((prompt) => {
-            const user = users.find(u => u.username === prompt.seller);
-            return (
+          {loading ? (
+             Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="h-[450px] rounded-[2.5rem] bg-white/5 animate-pulse" />
+            ))
+          ) : (
+            prompts.slice(0, 3).map((prompt: any) => (
               <PromptCard 
-                key={prompt.id}
-                id={prompt.id}
+                key={prompt._id || prompt.id}
+                id={prompt._id || prompt.id}
                 title={prompt.title}
                 tagline={prompt.tagline}
                 price={prompt.price}
-                rating={prompt.rating}
+                rating={prompt.rating || 5}
                 platform={prompt.platform}
                 author={{
                   username: prompt.seller,
-                  avatar: user?.avatar || `https://i.pravatar.cc/150?u=${prompt.seller}`
+                  avatar: `https://avatar.iran.liara.run/public/boy?username=${prompt.seller}`
                 }}
                 previewImage={prompt.images[0]}
-                promptPreview={prompt.preview.substring(0, 80)}
+                promptPreview={prompt.promptText.substring(0, 80)}
               />
-            );
-          })}
+            ))
+          )}
         </div>
       </section>
 
-      {/* Footer CTA */}
       <section className="container mx-auto px-6 max-w-7xl pb-24">
         <div className="glass-panel p-16 md:p-32 rounded-[4rem] text-center relative overflow-hidden border-white/5 shadow-3xl">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-skyblue/10 blur-[150px] -translate-y-1/2 pointer-events-none" />
@@ -108,18 +133,7 @@ export default function LandingPage() {
           </div>
         </div>
         
-        <footer className="mt-24 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-muted-foreground font-medium">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-skyblue flex items-center justify-center font-black text-black text-xs shadow-lg shadow-skyblue/20">P</div>
-            <span className="font-black text-white tracking-tight">Vault<span className="text-skyblue">.</span></span>
-          </div>
-          <div className="flex gap-10 text-sm">
-            <a href="#" className="hover:text-skyblue transition-colors">Documentation</a>
-            <a href="#" className="hover:text-skyblue transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-skyblue transition-colors">Terms of Service</a>
-          </div>
-          <p className="text-xs font-black uppercase tracking-widest opacity-40">© 2024 PROMPTVAULT INDUSTRIES. ALL RIGHTS RESERVED.</p>
-        </footer>
+        <Footer />
       </section>
     </div>
   );

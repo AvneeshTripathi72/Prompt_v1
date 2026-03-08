@@ -22,7 +22,6 @@ export default function SellerProfilePage({ params: paramsPromise }: { params: P
   return (
     <div className="container mx-auto px-6 py-16 max-w-7xl">
       <div className="space-y-16">
-        {/* Profile Header */}
         <div className="glass-panel p-12 md:p-16 rounded-[4rem] border-white/5 relative overflow-hidden shadow-3xl">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-skyblue/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="flex flex-col md:flex-row items-center md:items-start gap-12 relative z-10">
@@ -80,7 +79,6 @@ export default function SellerProfilePage({ params: paramsPromise }: { params: P
           </div>
         </div>
 
-        {/* Prompts Grid */}
         <div className="space-y-12">
           <div className="flex justify-between items-end border-b border-white/5 pb-8">
             <div className="space-y-2">

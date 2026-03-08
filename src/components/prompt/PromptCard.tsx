@@ -45,7 +45,6 @@ export const PromptCard = ({
     >
       <Link href={`/prompt/${id}`}>
         <Card className="glass-card group/card overflow-hidden rounded-3xl h-[440px] flex flex-col relative premium-shadow border-white/5 hover:border-skyblue/20">
-          {/* Card Front / Image Section */}
           <div className="relative aspect-[4/3] bg-muted overflow-hidden">
             <AnimatePresence mode="wait">
               {isHovered ? (
@@ -85,7 +84,6 @@ export const PromptCard = ({
             </div>
           </div>
 
-          {/* Content Section */}
           <div className="p-6 flex-grow flex flex-col gap-4">
             <div className="space-y-2">
               <h3 className="font-black text-xl tracking-tight line-clamp-1 group-hover:text-skyblue transition-colors duration-300">{title}</h3>

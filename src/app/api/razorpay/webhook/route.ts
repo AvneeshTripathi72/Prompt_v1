@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { supabase } from '@/lib/supabase';
+import connectDB from '@/lib/mongodb';
+import User from '@/models/User';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const signature = req.headers.get('x-razorpay-signature');
 
-  // Verify signature
   const secret = process.env.RAZORPAY_WEBHOOK_SECRET!;
   const expectedSignature = crypto
     .createHmac('sha256', secret)
@@ -25,13 +25,18 @@ export async function POST(req: NextRequest) {
     const userId = notes.userId;
     const coinAmount = notes.coinAmount;
 
-    // Update user balance in Supabase
-    const { error } = await supabase.rpc('increment_coins', { 
-      user_id: userId, 
-      amount: parseInt(coinAmount) 
-    });
+    try {
+      await connectDB();
+      const user = await User.findByIdAndUpdate(
+        userId,
+        { $inc: { coins: parseInt(coinAmount) } },
+        { new: true }
+      );
 
-    if (error) {
+      if (!user) {
+        return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      }
+    } catch (error) {
       console.error('Error updating balance:', error);
       return NextResponse.json({ error: 'Balance update failed' }, { status: 500 });
     }

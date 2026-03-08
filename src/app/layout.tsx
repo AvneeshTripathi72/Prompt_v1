@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/Navbar";
-import { Sidebar } from "@/components/Sidebar";
-import { Footer } from "@/components/Footer";
+import { MainLayout } from "@/components/MainLayout";
 import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,17 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.className} min-h-screen bg-background`}>
-        <div className="flex">
-          <Sidebar />
-          <div className="flex-1 flex flex-col min-h-screen lg:pl-64 overflow-x-hidden">
-            <Navbar />
-            <main className="flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </div>
-        </div>
+        <MainLayout>
+          {children}
+        </MainLayout>
         <Toaster position="top-center" richColors />
+        <script src="https://checkout.razorpay.com/v1/checkout.js" async />
       </body>
     </html>
   );

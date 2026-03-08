@@ -19,7 +19,9 @@ import {
   Star, 
   ArrowUpRight, 
   MessageSquare, 
-  Trophy 
+  Trophy,
+  Trash2,
+  Edit
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,39 +35,80 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const SALES_DATA = [
-  { name: "Oct 1", sales: 400 },
-  { name: "Oct 5", sales: 700 },
-  { name: "Oct 10", sales: 1200 },
-  { name: "Oct 15", sales: 900 },
-  { name: "Oct 20", sales: 2400 },
-  { name: "Oct 25", sales: 1800 },
-  { name: "Oct 30", sales: 3200 },
-];
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 export default function DashboardPage() {
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchStats = async () => {
+    try {
+      const res = await fetch("/api/dashboard/stats");
+      const data = await res.json();
+      setStats(data);
+    } catch (error) {
+      console.error("Failed to fetch stats:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const handleDelete = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!confirm("Are you sure you want to delete this prompt?")) return;
+    
+    try {
+      const res = await fetch(`/api/prompts/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error("Deletion failed");
+      toast.success("Prompt deleted successfully");
+      fetchStats();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[70vh]">
+        <div className="w-12 h-12 border-4 border-skyblue border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  const chartData = stats?.dailyData || [
+    { name: "Oct 1", sales: 400 },
+    { name: "Oct 5", sales: 700 },
+    { name: "Oct 10", sales: 1200 },
+    { name: "Oct 15", sales: 900 },
+    { name: "Oct 20", sales: 2400 },
+    { name: "Oct 25", sales: 1800 },
+    { name: "Oct 30", sales: 3200 },
+  ];
   return (
     <div className="container mx-auto px-6 py-16 max-w-7xl">
       <div className="space-y-16">
-        {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
           <div className="space-y-2">
             <h1 className="text-5xl font-black tracking-tight">Creator Hub</h1>
             <p className="text-muted-foreground font-medium text-lg">Real-time performance metrics and revenue analytics.</p>
           </div>
           <div className="flex gap-4">
-            <Button variant="outline" className="h-14 px-8 rounded-2xl border-white/5 font-black uppercase tracking-widest text-xs hover:bg-white/5">Export CSV</Button>
-            <Button className="h-14 px-8 rounded-2xl font-black uppercase tracking-widest text-xs shadow-2xl bg-skyblue text-white">New Submission</Button>
+            <Button variant="outline" className="h-11 px-6 rounded-xl border-white/5 font-black uppercase tracking-widest text-[9px] hover:bg-white/5 hover:border-white/20 transition-all duration-300">Export CSV</Button>
+            <Button className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[9px] shadow-lg bg-skyblue text-white hover:scale-105 active:scale-95 transition-all duration-300">New Submission</Button>
           </div>
         </div>
 
-        {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {[
-            { label: "Revenue", value: "₹45.2k", trend: "+12.5%", icon: DollarSign, color: "text-skyblue" },
-            { label: "Sales", value: "1,240", trend: "+8.2%", icon: ShoppingBag, color: "text-blue-500" },
-            { label: "Engagement", value: "8.9k", trend: "+24.3%", icon: Users, color: "text-indigo-500" },
-            { label: "Quality Score", value: "4.92", trend: "0.0%", icon: Star, color: "text-skyblue" },
+            { label: "Revenue", value: stats?.revenue || "₹0", trend: "+12.5%", icon: DollarSign, color: "text-skyblue" },
+            { label: "Sales", value: stats?.sales || "0", trend: "+8.2%", icon: ShoppingBag, color: "text-blue-500" },
+            { label: "Engagement", value: stats?.engagement || "0", trend: "+24.3%", icon: Users, color: "text-indigo-500" },
+            { label: "Quality Score", value: stats?.qualityScore || "5.00", trend: "0.0%", icon: Star, color: "text-skyblue" },
           ].map((stat, i) => (
             <Card key={stat.label} className="glass-card p-10 rounded-[2.5rem] border-white/5 scale-100 hover:scale-[1.02] transition-transform duration-500">
               <div className="flex justify-between items-start mb-8">
@@ -82,7 +125,6 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* Charts & Leaderboard */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <Card className="lg:col-span-2 glass-card p-10 rounded-[2.5rem] border-white/5 space-y-10">
             <div className="flex justify-between items-center">
@@ -97,7 +139,7 @@ export default function DashboardPage() {
             </div>
             <div className="h-[400px] w-full pr-4">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={SALES_DATA}>
+                <AreaChart data={chartData}>
                   <defs>
                     <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.4}/>
@@ -151,7 +193,6 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Top Prompts Table */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
           <Card className="xl:col-span-2 glass-card overflow-hidden border-white/5 rounded-[2.5rem]">
             <div className="p-10 border-b border-white/5 flex justify-between items-center">
@@ -165,30 +206,49 @@ export default function DashboardPage() {
                   <TableHead className="font-black uppercase text-[10px] tracking-widest">Sales</TableHead>
                   <TableHead className="font-black uppercase text-[10px] tracking-widest">Index</TableHead>
                   <TableHead className="font-black uppercase text-[10px] tracking-widest">Conversion</TableHead>
-                  <TableHead className="text-right pr-10 font-black uppercase text-[10px] tracking-widest">Net Profit</TableHead>
+                  <TableHead className="font-black uppercase text-[10px] tracking-widest">Net Profit</TableHead>
+                  <TableHead className="text-right pr-10 font-black uppercase text-[10px] tracking-widest">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {[
-                  { name: "Steampunk Character Architect", sales: 450, views: "12k", cr: "3.75%", revenue: "₹34,000" },
-                  { name: "SaaS Landing Copy Wizard", sales: 280, views: "8k", cr: "3.50%", revenue: "₹21,000" },
-                  { name: "Minimalist Vector Logo Gen", sales: 120, views: "5k", cr: "2.40%", revenue: "₹9,000" },
-                ].map((row, i) => (
-                  <TableRow key={i} className="border-white/5 h-20 hover:bg-white/5 transition-colors group cursor-pointer">
+                {(stats?.topSellers || []).map((row: any, i: number) => (
+                  <TableRow key={row.id || i} className="border-white/5 h-20 hover:bg-white/5 transition-colors group cursor-pointer">
                     <TableCell className="font-black tracking-tight text-base pl-10 group-hover:text-skyblue transition-colors">{row.name}</TableCell>
                     <TableCell className="font-bold text-muted-foreground">{row.sales}</TableCell>
                     <TableCell className="font-bold text-muted-foreground">{row.views}</TableCell>
                     <TableCell>
                       <Badge className="bg-skyblue/10 text-skyblue border-skyblue/20 px-3 py-1 font-black">{row.cr}</Badge>
                     </TableCell>
-                    <TableCell className="text-right font-black text-lg pr-10 text-skyblue">{row.revenue}</TableCell>
+                    <TableCell className="font-black text-lg text-skyblue">{row.revenue}</TableCell>
+                    <TableCell className="text-right pr-10">
+                      <div className="flex justify-end gap-2">
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="w-9 h-9 rounded-xl hover:bg-skyblue/10 hover:text-skyblue transition-all"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toast.info("Edit feature coming soon!");
+                          }}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="w-9 h-9 rounded-xl hover:bg-red-500/10 hover:text-red-500 transition-all text-muted-foreground"
+                          onClick={(e) => handleDelete(row.id, e)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </Card>
 
-          {/* Recent Reviews */}
           <Card className="glass-card p-10 rounded-[2.5rem] border-white/5 space-y-8">
             <div className="flex justify-between items-center">
               <h3 className="text-2xl font-black tracking-tight">Feedback</h3>

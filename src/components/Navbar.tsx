@@ -1,25 +1,51 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Search, Wallet, Bell, Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState, useEffect } from "react";
 import { Input } from "./ui/input";
 
 export const Navbar = () => {
+  const pathname = usePathname();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
   const router = useRouter();
 
+  const [balance, setBalance] = useState<number>(0);
+
+  const fetchBalance = async () => {
+    try {
+      const res = await fetch("/api/user/profile");
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      const data = await res.json();
+      if (data && typeof data.coins === "number") {
+        setBalance(data.coins);
+      }
+    } catch (e: any) {
+      console.error("Fetch balance error:", e.message);
+    }
+  };
+
   useEffect(() => {
+    setIsLoggedIn(document.cookie.includes("auth_token"));
+    fetchBalance();
+    
+    window.addEventListener("balanceUpdate", fetchBalance);
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("balanceUpdate", fetchBalance);
+    };
   }, []);
+
+  if (pathname === "/auth") return null;
 
   const handleSearch = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && search.trim()) {
@@ -35,7 +61,6 @@ export const Navbar = () => {
         }`}
       >
         <div className="px-6 h-20 flex items-center justify-between gap-8">
-          {/* Mobile Logo & Toggle */}
           <div className="flex items-center gap-4 lg:hidden">
             <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(true)}>
               <Menu className="w-6 h-6" />
@@ -45,7 +70,6 @@ export const Navbar = () => {
             </Link>
           </div>
 
-          {/* Search Bar */}
           <div className="hidden md:flex flex-1 max-w-xl relative group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-skyblue transition-colors" />
             <Input 
@@ -60,24 +84,36 @@ export const Navbar = () => {
           <div className="flex items-center gap-6">
             <Link href="/wallet" className="hidden sm:flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-2xl border border-white/10 transition-colors">
               <Wallet className="w-4 h-4 text-crimson" />
-              <span className="text-sm font-bold">500</span>
+              <span className="text-sm font-bold">{balance}</span>
             </Link>
             
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="icon" className="hidden sm:flex text-muted-foreground hover:text-skyblue">
                 <Bell className="w-5 h-5" />
               </Button>
-              <Link href="/auth">
-                <Button variant="default" className="rounded-2xl px-6 h-11 bg-crimson text-white hover:bg-crimson/90 shadow-[0_4px_15px_-3px_hsla(0,60%,70%,0.4)] transition-all font-bold">
-                  Join Now
+              {isLoggedIn ? (
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+                    window.location.reload();
+                  }}
+                  className="rounded-2xl px-6 h-11 border-white/10 hover:bg-white/5 transition-all font-bold"
+                >
+                  Logout
                 </Button>
-              </Link>
+              ) : (
+                <Link href="/auth">
+                  <Button variant="default" className="rounded-2xl px-6 h-11 bg-crimson text-white hover:bg-crimson/90 shadow-[0_4px_15px_-3px_hsla(0,60%,70%,0.4)] transition-all font-bold">
+                    Join Now
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Sidebar Overlay */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-[60] lg:hidden">
           <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
@@ -96,7 +132,7 @@ export const Navbar = () => {
               {[
                 { label: "Home", href: "/" },
                 { label: "Explore", href: "/explore" },
-                { label: "Sell", href: "/sell" },
+                { label: "Add Prompt", href: "/sell" },
                 { label: "Dashboard", href: "/dashboard" },
                 { label: "Purchases", href: "/purchases" },
                 { label: "Wallet", href: "/wallet" },
