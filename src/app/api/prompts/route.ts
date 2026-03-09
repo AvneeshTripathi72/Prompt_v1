@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Prompt from '@/models/Prompt';
-import { unstable_cache } from 'next/cache';
+import { unstable_cache, revalidateTag } from 'next/cache';
 
 // Low-level caching for prompts with dynamic keys
 const getCachedPrompts = (query: any, sort: any, skip: number, limit: number) => 
@@ -33,6 +33,9 @@ export async function POST(req: NextRequest) {
       ...body,
       seller: body.seller || 'anonymous',
     });
+
+    // Invalidate the 'prompts' cache tag
+    revalidateTag('prompts');
 
     return NextResponse.json(prompt, { status: 201 });
   } catch (error: any) {

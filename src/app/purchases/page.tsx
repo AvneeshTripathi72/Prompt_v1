@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingBag, Search, ExternalLink, MessageCircle, Download, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ShoppingBag, Search, ExternalLink, MessageCircle, Download, ChevronLeft, ChevronRight, Sparkles, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export default function PurchasesPage() {
   const [purchases, setPurchases] = useState<any[]>([]);
@@ -108,8 +109,16 @@ export default function PurchasesPage() {
                         <Button variant="outline" className="rounded-xl h-11 border-white/10 bg-white/5 hover:bg-white/10">
                           <Download className="w-4 h-4 mr-2" /> Source
                         </Button>
-                        <Button variant="outline" className="rounded-xl h-11 border-white/10 bg-white/5 hover:bg-white/10">
-                          <MessageCircle className="w-4 h-4 mr-2" /> Help
+                        <Button 
+                          variant="outline" 
+                          className="rounded-xl h-11 border-white/10 bg-white/5 hover:bg-white/10 gap-2"
+                          onClick={() => {
+                            const url = `${window.location.origin}/prompt/${prompt._id}`;
+                            navigator.clipboard.writeText(url);
+                            toast.success("Logic sequence link copied!");
+                          }}
+                        >
+                          <Share2 className="w-4 h-4" /> Share
                         </Button>
                       </div>
                     </div>
