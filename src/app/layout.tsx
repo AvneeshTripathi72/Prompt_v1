@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
+// Main layout configuration for PromptVault
 export const metadata: Metadata = {
   title: "PromptVault | The AI Prompt Marketplace",
   description: "Buy and sell high-quality AI prompts for ChatGPT, Midjourney, Claude, and more.",
