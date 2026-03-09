@@ -117,11 +117,17 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
                 </div>
 
                 <div className="md:w-3/5 relative h-full bg-muted overflow-hidden">
-                  <img 
-                    src={currentFeatured.images?.[0] || 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=1000'} 
-                    alt={currentFeatured.title} 
-                    className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-[2000ms] cubic-bezier(0.4, 0, 0.2, 1)"
-                  />
+                  {currentFeatured.images?.[0] ? (
+                    <img 
+                      src={currentFeatured.images[0]} 
+                      alt={currentFeatured.title} 
+                      className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-[2000ms] cubic-bezier(0.4, 0, 0.2, 1)"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-skyblue/5 flex items-center justify-center">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/20">No Preview</span>
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-r from-background/0 via-background/0 to-background hidden md:block" />
                   <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent md:hidden" />
                   
@@ -147,12 +153,16 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
 
                   <div className="flex flex-col gap-8 pt-8 border-t border-white/10">
                     <div className="flex items-center gap-5">
-                      <div className="w-16 h-16 rounded-3xl overflow-hidden border-2 border-skyblue/30 shadow-2xl transform group-hover/card:rotate-12 transition-transform duration-500">
-                        <img 
-                          src={`https://avatar.iran.liara.run/public/boy?username=${currentFeatured.seller}`} 
-                          alt="Avatar" 
-                          className="w-full h-full object-cover"
-                        />
+                      <div className="w-16 h-16 rounded-3xl overflow-hidden border-2 border-skyblue/30 shadow-2xl transform group-hover/card:rotate-12 transition-transform duration-500 flex items-center justify-center bg-white/5">
+                        {currentFeatured.seller ? (
+                          <img 
+                            src={`https://avatar.iran.liara.run/public/boy?username=${currentFeatured.seller}`} 
+                            alt="Avatar" 
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-skyblue/10" />
+                        )}
                       </div>
                     <div className="flex flex-col">
                       <span className="text-xl font-black tracking-tight">@{currentFeatured.seller}</span>
@@ -232,11 +242,17 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
                     </div>
 
                     <div className="relative h-60 bg-muted overflow-hidden">
-                      <img 
-                        src={prompt.images[0]} 
-                        alt={prompt.title} 
-                        className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-700"
-                      />
+                      {prompt.images?.[0] ? (
+                        <img 
+                          src={prompt.images[0]} 
+                          alt={prompt.title} 
+                          className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-700"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-skyblue/5 flex items-center justify-center">
+                          <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/20">No Preview</span>
+                        </div>
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
                       <Badge className="absolute bottom-4 left-6 bg-white/10 backdrop-blur-xl border-white/10 text-white font-bold px-4 py-1.5 rounded-xl uppercase tracking-widest text-[8px]">
                         {prompt.platform}
@@ -249,11 +265,17 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
 
                       <div className="mt-auto flex justify-between items-center pt-6 border-t border-white/5">
                         <div className="flex items-center gap-3">
-                          <img 
-                            src={`https://avatar.iran.liara.run/public/boy?username=${prompt.seller}`} 
-                            alt="Avatar" 
-                            className="w-10 h-10 rounded-xl object-cover border border-white/10"
-                          />
+                          <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 flex items-center justify-center bg-white/5">
+                            {prompt.seller ? (
+                              <img 
+                                src={`https://avatar.iran.liara.run/public/boy?username=${prompt.seller}`} 
+                                alt="Avatar" 
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-skyblue/10" />
+                            )}
+                          </div>
                           <span className="text-sm font-bold tracking-tight">@{prompt.seller}</span>
                         </div>
                         <div className="flex flex-col items-end gap-1">

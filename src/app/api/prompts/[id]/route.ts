@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Prompt from '@/models/Prompt';
+import { unstable_cache } from 'next/cache';
+
+const getCachedPrompt = (id: string) => 
+  unstable_cache(
+    async () => {
+      await connectDB();
+      return Prompt.findById(id).lean();
+    },
+    [`prompt-detail-${id}`],
+    { revalidate: 300, tags: ['prompts'] } // Cache for 5 mins
+  )();
 
 export async function GET(
   req: NextRequest,
@@ -8,8 +19,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    await connectDB();
-    const prompt = await Prompt.findById(id);
+    const prompt = await getCachedPrompt(id);
     
     if (!prompt) {
       return NextResponse.json({ error: 'Prompt not found' }, { status: 404 });
@@ -29,11 +39,10 @@ export async function DELETE(
     const { id } = await params;
     await connectDB();
     
-    // In a real app, you'd verify the user from the session
-    // For now, we allow deletion by Global_Engineer
     const prompt = await Prompt.findById(id);
     if (!prompt) return NextResponse.json({ error: 'Prompt not found' }, { status: 404 });
 
+    // For now, allow Global_Engineer
     if (prompt.seller !== 'Global_Engineer') {
       return NextResponse.json({ error: 'You do not have permission to delete this prompt' }, { status: 403 });
     }
@@ -61,7 +70,6 @@ export async function PUT(
       return NextResponse.json({ error: 'You do not have permission to edit this prompt' }, { status: 403 });
     }
 
-    // Update fields
     const updatedPrompt = await Prompt.findByIdAndUpdate(id, body, { new: true });
     return NextResponse.json(updatedPrompt);
   } catch (error: any) {

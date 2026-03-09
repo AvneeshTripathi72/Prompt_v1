@@ -30,8 +30,9 @@ export async function POST(req: NextRequest) {
     await user.save();
 
     // 5. Update prompt sales
-    prompt.sales = (prompt.sales || 0) + 1;
-    await prompt.save();
+    await Prompt.findByIdAndUpdate(promptId, { 
+      $inc: { sales: 1 } 
+    });
 
     return NextResponse.json({ 
       success: true, 

@@ -95,24 +95,34 @@ export default function PromptDetailPage({ params: paramsPromise }: { params: Pr
 
           <div className="grid grid-cols-1 gap-6">
             <div className="aspect-[16/9] w-full rounded-[3rem] overflow-hidden bg-muted relative border border-white/5 shadow-2xl group">
-              <img 
-                src={prompt.images[0]} 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" 
-                alt="Main Preview"
-              />
+              {prompt.images?.[0] ? (
+                <img 
+                  src={prompt.images[0]}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" 
+                  alt="Main Preview"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-white/5">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/30">No Preview Available</span>
+                </div>
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
               <div className="absolute bottom-10 left-10">
                 <Badge className="bg-black/60 backdrop-blur-2xl border-white/10 text-skyblue font-black tracking-[0.2em] text-[10px] px-6 py-2 rounded-2xl uppercase">High Definition Preview</Badge>
               </div>
             </div>
             <div className="grid grid-cols-4 gap-6">
-              {prompt.images.map((img: string, i: number) => (
+              {prompt.images?.map((img: string, i: number) => (
                 <div key={i} className="aspect-square rounded-[2rem] overflow-hidden bg-muted cursor-pointer hover:ring-4 ring-skyblue/30 transition-all border border-white/5 shadow-lg group">
-                  <img 
-                    src={img} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                    alt={`Preview ${i}`}
-                  />
+                  {img ? (
+                    <img 
+                      src={img} 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                      alt={`Preview ${i}`}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-white/5" />
+                  )}
                 </div>
               ))}
             </div>
@@ -141,8 +151,8 @@ export default function PromptDetailPage({ params: paramsPromise }: { params: Pr
                 {!isPurchased ? (
                   <>
                     <div className="select-none text-muted-foreground/30 italic blur-[2px]">
-                      {prompt.promptText.substring(0, 150)}...
-                      {prompt.promptText.substring(0, 150)}...
+                      {prompt.promptText?.substring(0, 150)}...
+                      {prompt.promptText?.substring(0, 150)}...
                     </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-background via-background/95 to-transparent backdrop-blur-md flex flex-col items-center justify-center p-12 text-center gap-8">
                       <div className="w-20 h-20 bg-skyblue/10 rounded-3xl flex items-center justify-center border border-skyblue/20 shadow-2xl relative">

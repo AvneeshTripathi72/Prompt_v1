@@ -36,54 +36,50 @@ function ExploreContent() {
   const ITEMS_PER_PAGE = 9;
 
   const [prompts, setPrompts] = useState<any[]>([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchPrompts = async () => {
-      try {
-        const res = await fetch("/api/prompts");
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          setPrompts(data);
-        } else {
-          setPrompts([]);
-        }
-      } catch (error) {
-        console.error("Failed to fetch prompts:", error);
-      } finally {
-        setLoading(false);
+  const fetchPrompts = async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: ITEMS_PER_PAGE.toString(),
+        q: q,
+        category: activeCategory,
+        platform: selectedPlatforms.join(","),
+        minRating: minRating?.toString() || "",
+        sortBy: sortBy,
+        minPrice: priceRange[0].toString(),
+        maxPrice: priceRange[1].toString(),
+      });
+
+      const res = await fetch(`/api/prompts?${params.toString()}`);
+      const data = await res.json();
+      
+      if (data.prompts) {
+        setPrompts(data.prompts);
+        setTotalItems(data.total);
+        setTotalPages(data.totalPages);
+      } else {
+        setPrompts([]);
+        setTotalItems(0);
+        setTotalPages(0);
       }
-    };
-    fetchPrompts();
-  }, []);
+    } catch (error) {
+      console.error("Failed to fetch prompts:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    setCurrentPage(1);
-  }, [q, priceRange, activeCategory, selectedPlatforms, minRating, sortBy]);
+    fetchPrompts();
+  }, [q, priceRange, activeCategory, selectedPlatforms, minRating, sortBy, currentPage]);
 
-  const filteredPrompts = (Array.isArray(prompts) ? prompts : []).filter(p => {
-    const matchesSearch = q === "" || 
-      p.title.toLowerCase().includes(q.toLowerCase()) || 
-      p.tagline.toLowerCase().includes(q.toLowerCase());
-    const matchesCategory = activeCategory === "All" || p.category?.toLowerCase() === activeCategory.toLowerCase();
-    const matchesPlatform = selectedPlatforms.length === 0 || selectedPlatforms.some(sp => sp.toLowerCase() === p.platform?.toLowerCase());
-    const matchesPrice = (p.price || 0) >= priceRange[0] && (p.price || 0) <= priceRange[1];
-    const matchesRating = minRating === null || (p.rating || 5) >= minRating;
-    
-    return matchesSearch && matchesCategory && matchesPlatform && matchesPrice && matchesRating;
-  }).sort((a, b) => {
-    if (sortBy === "Newest First") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    if (sortBy === "Price: Low to High") return a.price - b.price;
-    if (sortBy === "Price: High to Low") return b.price - a.price;
-    if (sortBy === "Most Purchased") return (b.sales || 0) - (a.sales || 0);
-    return 0;
-  });
+  const paginatedPrompts = prompts;
 
-  const totalPages = Math.ceil(filteredPrompts.length / ITEMS_PER_PAGE);
-  const paginatedPrompts = filteredPrompts.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
 
   const togglePlatform = (platform: string) => {
     setSelectedPlatforms(prev => 
@@ -124,7 +120,7 @@ function ExploreContent() {
                 </Button>
                 <div className="h-4 w-px bg-white/10 hidden md:block" />
                 <p className="text-muted-foreground font-bold text-xs uppercase tracking-widest opacity-60 hidden md:block">
-                  {filteredPrompts.length} Available
+                  {totalItems} Available
                 </p>
               </div>
             </div>
@@ -284,23 +280,23 @@ function ExploreContent() {
               <PromptCard 
                 key={prompt._id || prompt.id}
                 id={prompt._id || prompt.id}
-                title={prompt.title}
-                tagline={prompt.tagline}
-                price={prompt.price}
+                title={prompt.title || "Untitled Prompt"}
+                tagline={prompt.tagline || ""}
+                price={prompt.price || 0}
                 rating={prompt.rating || 5}
-                platform={prompt.platform}
+                platform={prompt.platform || "Unknown"}
                 author={{
-                  username: prompt.seller,
-                  avatar: `https://avatar.iran.liara.run/public/boy?username=${prompt.seller}`
+                  username: prompt.seller || "anonymous",
+                  avatar: prompt.seller ? `https://avatar.iran.liara.run/public/boy?username=${prompt.seller}` : ""
                 }}
-                previewImage={prompt.images[0]}
-                promptPreview={prompt.promptText.substring(0, 80)}
+                previewImage={prompt.images?.[0] || ""}
+                promptPreview={prompt.promptText?.substring(0, 80) || ""}
               />
             ))
           )}
         </div>
         
-        {filteredPrompts.length === 0 && (
+        {totalItems === 0 && (
           <div className="flex flex-col items-center justify-center py-40 text-center space-y-4">
             <Search className="w-16 h-16 text-muted-foreground/20" />
             <div className="space-y-1">

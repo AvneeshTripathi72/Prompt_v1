@@ -18,9 +18,11 @@ export default function LandingPage() {
   useEffect(() => {
     const fetchPrompts = async () => {
       try {
-        const res = await fetch("/api/prompts");
+        const res = await fetch("/api/prompts?limit=6&sortBy=Most Purchased");
         const data = await res.json();
-        if (Array.isArray(data)) {
+        if (data && Array.isArray(data.prompts)) {
+          setPrompts(data.prompts);
+        } else if (Array.isArray(data)) {
           setPrompts(data);
         } else {
           setPrompts([]);
@@ -95,17 +97,17 @@ export default function LandingPage() {
               <PromptCard 
                 key={prompt._id || prompt.id}
                 id={prompt._id || prompt.id}
-                title={prompt.title}
-                tagline={prompt.tagline}
-                price={prompt.price}
+                title={prompt.title || "Untitled Prompt"}
+                tagline={prompt.tagline || ""}
+                price={prompt.price || 0}
                 rating={prompt.rating || 5}
-                platform={prompt.platform}
+                platform={prompt.platform || "Unknown"}
                 author={{
-                  username: prompt.seller,
-                  avatar: `https://avatar.iran.liara.run/public/boy?username=${prompt.seller}`
+                  username: prompt.seller || "anonymous",
+                  avatar: prompt.seller ? `https://avatar.iran.liara.run/public/boy?username=${prompt.seller}` : ""
                 }}
-                previewImage={prompt.images[0]}
-                promptPreview={prompt.promptText.substring(0, 80)}
+                previewImage={prompt.images?.[0] || ""}
+                promptPreview={prompt.promptText?.substring(0, 80) || ""}
               />
             ))
           )}

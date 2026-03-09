@@ -66,11 +66,17 @@ export const PromptCard = ({
               ) : null}
             </AnimatePresence>
             
-            <img 
-              src={previewImage} 
-              alt={title} 
-              className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110" 
-            />
+            {previewImage ? (
+              <img 
+                src={previewImage} 
+                alt={title} 
+                className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110" 
+              />
+            ) : (
+              <div className="w-full h-full bg-muted flex items-center justify-center">
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">No Preview</p>
+              </div>
+            )}
             
             <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/20 to-transparent z-10" />
             
@@ -94,8 +100,12 @@ export const PromptCard = ({
 
             <div className="mt-auto pt-5 flex justify-between items-center border-t border-white/5">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-skyblue/10 overflow-hidden border border-white/10 p-0.5 group-hover:rotate-6 transition-transform">
-                  <img src={author.avatar} alt={author.username} className="w-full h-full object-cover rounded-[calc(0.75rem-1px)]" />
+                <div className="w-8 h-8 rounded-xl bg-skyblue/10 overflow-hidden border border-white/10 p-0.5 group-hover:rotate-6 transition-transform flex items-center justify-center">
+                  {author.avatar ? (
+                    <img src={author.avatar} alt={author.username} className="w-full h-full object-cover rounded-[calc(0.75rem-1px)]" />
+                  ) : (
+                    <div className="w-full h-full bg-skyblue/20 rounded-[calc(0.75rem-1px)]" />
+                  )}
                 </div>
                 <span className="text-xs font-bold text-muted-foreground transition-colors group-hover:text-foreground">@{author.username}</span>
               </div>
