@@ -59,8 +59,8 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
               <Flame className="w-6 h-6 text-crimson fill-current" />
             </div>
             <div>
-              <h2 className="text-4xl font-black tracking-tight flex items-center gap-3">Trending <span className="text-crimson">Logic</span></h2>
-              <p className="text-sm text-muted-foreground font-medium uppercase tracking-widest opacity-50">Hot Architectures This Minute</p>
+              <h2 className="text-3xl font-black tracking-tight flex items-center gap-3">Trending <span className="text-crimson">Logic</span></h2>
+              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest opacity-50">Hot Architectures This Minute</p>
             </div>
           </div>
 
@@ -93,7 +93,7 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
             >
-              <Card className="glass-card group/card overflow-hidden rounded-[3rem] h-[600px] flex flex-col md:flex-row relative premium-shadow border-white/5 hover:border-skyblue/30 transition-all duration-700">
+              <Card className="glass-card group/card overflow-hidden rounded-[2.5rem] h-[480px] flex flex-col md:flex-row relative premium-shadow border-white/5 hover:border-skyblue/30 transition-all duration-700">
                 <div className="absolute top-10 left-10 z-30">
                   <div className="w-20 h-20 bg-crimson rounded-3xl flex items-center justify-center border-4 border-white/10 font-black text-5xl text-white shadow-2xl animate-float">
                     {activeFeaturedIndex + 1}
@@ -137,16 +137,16 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
                   </div>
                 </div>
 
-                <div className="md:w-2/5 p-12 md:p-16 flex flex-col justify-center gap-8 relative z-10 bg-background/50 backdrop-blur-3xl md:bg-transparent">
+                <div className="md:w-2/5 p-8 md:p-12 flex flex-col justify-center gap-6 relative z-10 bg-background/50 backdrop-blur-3xl md:bg-transparent">
                   <div className="space-y-6">
                     <div className="flex items-center gap-3">
                       <Star className="w-5 h-5 text-crimson fill-current" />
                       <span className="text-sm font-black uppercase tracking-[0.2em] text-crimson">Elite Status</span>
                     </div>
-                    <h3 className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.9] group-hover/card:text-gradient-lavender transition-all duration-500">
+                    <h3 className="text-4xl md:text-5xl font-black tracking-tighter leading-[0.9] group-hover/card:text-gradient-lavender transition-all duration-500">
                       {currentFeatured.title}
                     </h3>
-                    <p className="text-xl text-muted-foreground/80 leading-relaxed font-medium line-clamp-3">
+                    <p className="text-lg text-muted-foreground/80 leading-relaxed font-medium line-clamp-3">
                       {currentFeatured.tagline}
                     </p>
                   </div>
@@ -165,8 +165,8 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
                         )}
                       </div>
                     <div className="flex flex-col">
-                      <span className="text-xl font-black tracking-tight">@{currentFeatured.seller}</span>
-                      <span className="text-xs text-muted-foreground font-black uppercase tracking-widest">Genesis Creator</span>
+                      <span className="text-lg font-black tracking-tight">@{currentFeatured.seller}</span>
+                      <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Genesis Creator</span>
                     </div>
                   </div>
 
@@ -175,10 +175,10 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
                       <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Professional License</span>
                       <div className="flex items-center gap-3">
                         <Wallet className="w-6 h-6 text-skyblue" />
-                        <span className="text-4xl font-black text-skyblue">{currentFeatured.price}</span>
+                        <span className="text-3xl font-black text-skyblue">{currentFeatured.price}</span>
                       </div>
                     </div>
-                    <Button className="h-16 px-10 rounded-2xl bg-crimson text-white font-black uppercase tracking-widest hover:scale-105 active:scale-95 shadow-[0_15px_40px_-10px_rgba(255,100,100,0.4)] transition-all">
+                    <Button className="h-14 px-8 rounded-xl bg-crimson text-white font-black uppercase tracking-widest hover:scale-105 active:scale-95 shadow-[0_15px_40px_-10px_rgba(255,100,100,0.4)] transition-all">
                       Unlock Now
                     </Button>
                   </div>
@@ -227,21 +227,21 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
             const user = users.find(u => u.username === prompt.seller);
             return (
               <motion.div
-                key={prompt.id}
+                key={prompt._id || prompt.id || `trending-${index}`}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                className="min-w-[400px] snap-start"
+                className="min-w-[320px] snap-start"
               >
                 <Link href={`/prompt/${prompt.id}`}>
-                  <Card className="glass-card group/card overflow-hidden rounded-[2.5rem] h-[480px] flex flex-col relative ring-1 ring-white/5 hover:ring-skyblue/30 transition-all duration-500">
+                  <Card className="glass-card group/card overflow-hidden rounded-[2rem] h-[380px] flex flex-col relative ring-1 ring-white/5 hover:ring-skyblue/30 transition-all duration-500">
                     <div className="absolute top-6 left-6 z-30 flex items-center gap-3">
                       <div className="w-12 h-12 bg-black/80 backdrop-blur-2xl rounded-xl flex items-center justify-center border border-white/10 font-black text-2xl text-white shadow-xl">
                         {index + 6}
                       </div>
                     </div>
 
-                    <div className="relative h-60 bg-muted overflow-hidden">
+                    <div className="relative h-48 bg-muted overflow-hidden">
                       {prompt.images?.[0] ? (
                         <img 
                           src={prompt.images[0]} 

@@ -60,7 +60,7 @@ export const Navbar = () => {
           scrolled ? "bg-background/80 backdrop-blur-md border-b border-white/5" : "bg-transparent"
         }`}
       >
-        <div className="px-6 h-20 flex items-center justify-between gap-8">
+        <div className="px-5 h-16 flex items-center justify-between gap-8">
           <div className="flex items-center gap-4 lg:hidden">
             <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(true)}>
               <Menu className="w-6 h-6" />

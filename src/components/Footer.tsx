@@ -3,11 +3,11 @@ import { Github, Twitter, Linkedin, ExternalLink } from "lucide-react";
 
 export const Footer = () => {
   return (
-    <footer className="mt-32 pb-16 relative overflow-hidden">
+    <footer className="mt-20 pb-12 relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 py-16">
           <div className="space-y-8">
             <Link href="/" className="flex items-center gap-3 group">
               <div className="w-10 h-10 bg-skyblue rounded-2xl flex items-center justify-center text-black font-black text-sm shadow-[0_0_20px_rgba(56,189,248,0.3)] group-hover:rotate-12 transition-transform duration-500">P</div>

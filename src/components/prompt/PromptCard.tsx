@@ -44,7 +44,7 @@ export const PromptCard = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <Link href={`/prompt/${id}`}>
-        <Card className="glass-card group/card overflow-hidden rounded-3xl h-[440px] flex flex-col relative premium-shadow border-white/5 hover:border-skyblue/20">
+        <Card className="glass-card group/card overflow-hidden rounded-2xl h-[360px] flex flex-col relative premium-shadow border-white/5 hover:border-skyblue/20">
           <div className="relative aspect-[4/3] bg-muted overflow-hidden">
             <AnimatePresence mode="wait">
               {isHovered ? (
@@ -90,10 +90,10 @@ export const PromptCard = ({
             </div>
           </div>
 
-          <div className="p-6 flex-grow flex flex-col gap-4">
-            <div className="space-y-2">
-              <h3 className="font-black text-xl tracking-tight line-clamp-1 group-hover:text-skyblue transition-colors duration-300">{title}</h3>
-              <p className="text-sm text-muted-foreground/80 line-clamp-2 leading-relaxed font-medium">
+          <div className="p-5 flex-grow flex flex-col gap-3">
+            <div className="space-y-1">
+              <h3 className="font-black text-lg tracking-tight line-clamp-1 group-hover:text-skyblue transition-colors duration-300">{title}</h3>
+              <p className="text-[12px] text-muted-foreground/80 line-clamp-2 leading-tight font-medium">
                 {tagline}
               </p>
             </div>
@@ -110,9 +110,9 @@ export const PromptCard = ({
                 <span className="text-xs font-bold text-muted-foreground transition-colors group-hover:text-foreground">@{author.username}</span>
               </div>
               
-              <div className="flex items-center gap-2 bg-crimson/10 px-4 py-2 rounded-2xl border border-crimson/20 shadow-[0_4px_12px_rgba(255,100,100,0.1)] group-hover:scale-105 transition-transform duration-300">
-                <Wallet className="w-3.5 h-3.5 text-crimson" />
-                <span className="text-base font-black text-crimson">{price}</span>
+              <div className="flex items-center gap-2 bg-crimson/10 px-3 py-1.5 rounded-xl border border-crimson/20 shadow-[0_4px_12px_rgba(255,100,100,0.1)] group-hover:scale-105 transition-transform duration-300">
+                <Wallet className="w-3 h-3 text-crimson" />
+                <span className="text-sm font-black text-crimson">{price}</span>
               </div>
             </div>
           </div>

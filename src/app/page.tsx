@@ -36,19 +36,19 @@ export default function LandingPage() {
     fetchPrompts();
   }, []);
   return (
-    <div className="flex flex-col gap-32 pb-32">
+    <div className="flex flex-col gap-20 pb-20">
       <section className="container mx-auto px-6 overflow-hidden pt-20">
         {loading ? (
-          <div className="h-[600px] rounded-[3rem] bg-white/5 animate-pulse" />
+          <div className="h-[480px] rounded-[2.5rem] bg-white/5 animate-pulse" />
         ) : (
           <TrendingSlider prompts={prompts} />
         )}
       </section>
 
       <section className="container mx-auto px-6">
-        <div className="text-center mb-20 space-y-4">
-          <h2 className="text-5xl font-black tracking-tight">Engineered for Results</h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium">The most intuitive workflow to monetize your expertise in generative AI.</p>
+        <div className="text-center mb-12 space-y-3">
+          <h2 className="text-3xl font-black tracking-tight">Engineered for Results</h2>
+          <p className="text-muted-foreground text-base max-w-xl mx-auto font-medium">The most intuitive workflow to monetize your expertise in generative AI.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {[
@@ -59,16 +59,16 @@ export default function LandingPage() {
           ].map((item, i) => (
             <motion.div
               key={i}
-              whileHover={{ y: -12 }}
-              className="glass-card p-10 rounded-[2.5rem] flex flex-col items-center text-center gap-6 group relative overflow-hidden"
+              whileHover={{ y: -8 }}
+              className="glass-card p-8 rounded-[2rem] flex flex-col items-center text-center gap-4 group relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-skyblue/5 rounded-full blur-2xl translate-x-1/2 -translate-y-1/2 group-hover:bg-skyblue/10 transition-colors" />
-              <div className="w-20 h-20 bg-skyblue/10 rounded-[2rem] flex items-center justify-center border border-skyblue/10 group-hover:border-skyblue/30 group-hover:rotate-6 transition-all duration-500 shadow-xl">
-                <item.icon className="w-10 h-10 text-skyblue" />
+              <div className="absolute top-0 right-0 w-20 h-20 bg-skyblue/5 rounded-full blur-2xl translate-x-1/2 -translate-y-1/2 group-hover:bg-skyblue/10 transition-colors" />
+              <div className="w-16 h-16 bg-skyblue/10 rounded-[1.5rem] flex items-center justify-center border border-skyblue/10 group-hover:border-skyblue/30 group-hover:rotate-6 transition-all duration-500 shadow-xl">
+                <item.icon className="w-8 h-8 text-skyblue" />
               </div>
-              <div className="space-y-3">
-                <h3 className="text-2xl font-black tracking-tight">{item.step}</h3>
-                <p className="text-sm text-muted-foreground font-medium leading-relaxed">{item.desc}</p>
+              <div className="space-y-2">
+                <h3 className="text-xl font-black tracking-tight">{item.step}</h3>
+                <p className="text-xs text-muted-foreground font-medium leading-relaxed">{item.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -77,9 +77,9 @@ export default function LandingPage() {
 
       <section className="container mx-auto px-6 max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-          <div className="space-y-3">
-            <h2 className="text-5xl font-black tracking-tight">Hottest Releases</h2>
-            <p className="text-xl text-muted-foreground font-medium">Top performing engineered prompts this week.</p>
+          <div className="space-y-2">
+            <h2 className="text-3xl font-black tracking-tight">Hottest Releases</h2>
+            <p className="text-lg text-muted-foreground font-medium">Top performing engineered prompts this week.</p>
           </div>
           <Link href="/explore">
             <Button variant="outline" className="h-14 px-8 rounded-2xl border-white/5 font-black uppercase tracking-widest text-xs hover:bg-white/5 gap-3">
@@ -114,13 +114,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="container mx-auto px-6 max-w-7xl pb-24">
-        <div className="glass-panel p-16 md:p-32 rounded-[4rem] text-center relative overflow-hidden border-white/5 shadow-3xl">
+      <section className="container mx-auto px-6 max-w-7xl pb-16">
+        <div className="glass-panel p-12 md:p-20 rounded-[3rem] text-center relative overflow-hidden border-white/5 shadow-3xl">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-skyblue/10 blur-[150px] -translate-y-1/2 pointer-events-none" />
           <div className="relative z-10 space-y-10">
-            <div className="space-y-4">
-              <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-tight">Ready to Engineer <br /><span className="text-gradient">the Future?</span></h2>
-              <p className="text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed">
+            <div className="space-y-3">
+              <h2 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight">Ready to Engineer <br /><span className="text-gradient">the Future?</span></h2>
+              <p className="text-lg text-muted-foreground font-medium max-w-xl mx-auto leading-relaxed">
                 Join 50,000+ creators building, sharing, and monetizing the world's most advanced AI instructions.
               </p>
             </div>
