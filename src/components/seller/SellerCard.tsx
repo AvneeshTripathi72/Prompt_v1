@@ -12,16 +12,16 @@ interface SellerCardProps {
 }
 
 export const SellerCard = ({ username, avatar, earnings, rating, totalSales }: SellerCardProps) => (
-  <Card className="glass-card p-6 rounded-[2rem] border-white/5 hover:border-primary/20 transition-all group">
+  <Card className="glass-card p-6 rounded-[2rem] border-border/40 hover:border-primary/20 transition-all group bg-card shadow-sm">
     <div className="flex flex-col items-center text-center gap-4">
       <div className="relative">
         <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-0 group-hover:scale-100 transition-transform duration-500" />
-        <div className="w-20 h-20 rounded-full border-2 border-primary/20 overflow-hidden relative z-10">
+        <div className="w-20 h-20 rounded-full border-2 border-primary/20 overflow-hidden relative z-10 bg-secondary">
           {avatar ? (
             <img src={avatar} alt={username} className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full bg-skyblue/10 flex items-center justify-center">
-              <span className="text-xl font-black text-skyblue/30">{username[0]?.toUpperCase()}</span>
+            <div className="w-full h-full bg-primary/10 flex items-center justify-center">
+              <span className="text-xl font-black text-primary/30">{username[0]?.toUpperCase()}</span>
             </div>
           )}
         </div>

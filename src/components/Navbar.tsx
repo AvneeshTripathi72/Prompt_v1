@@ -66,7 +66,7 @@ export const Navbar = () => {
       <nav
         className={cn(
           "sticky top-0 z-40 transition-all duration-300",
-          scrolled ? "bg-background/80 backdrop-blur-md border-b border-border/40" : "bg-transparent"
+          scrolled ? "bg-white/80 dark:bg-[#0B0B0F]/80 backdrop-blur-md border-b border-border" : "bg-transparent"
         )}
       >
         <div className="container mx-auto px-6 h-16 flex items-center justify-between gap-8">
@@ -76,24 +76,7 @@ export const Navbar = () => {
               <span className="hidden sm:inline-block">Vault<span className="text-primary italic">.</span></span>
             </Link>
 
-            <div className="hidden lg:flex items-center gap-1">
-              {[
-                { label: "Explore", href: "/explore" },
-                { label: "Sell", href: "/sell" },
-                { label: "Dashboard", href: "/dashboard" },
-              ].map((link) => (
-                <Link 
-                  key={link.href} 
-                  href={link.href}
-                  className={cn(
-                    "px-4 py-2 rounded-lg text-sm font-bold transition-all",
-                    pathname === link.href ? "text-primary bg-primary/5" : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
+
           </div>
 
           <div className="flex-1 max-w-md hidden md:flex relative group">
@@ -103,7 +86,7 @@ export const Navbar = () => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={handleSearch}
-              className="pl-10 h-10 bg-muted/50 border-border/40 rounded-xl focus:ring-primary/20 focus:border-primary/30 transition-all text-sm font-medium"
+              className="pl-10 h-10 bg-white dark:bg-[#181824] border-border rounded-xl focus:ring-primary/20 focus:border-primary transition-all text-sm font-medium text-[#111827] dark:text-white"
             />
           </div>
 
@@ -158,14 +141,14 @@ export const Navbar = () => {
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-[60] lg:hidden">
           <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
-          <nav className="absolute top-0 left-0 bottom-0 w-80 bg-background border-r border-white/5 p-8 flex flex-col gap-8 shadow-2xl animate-in slide-in-from-left duration-300">
+          <nav className="absolute top-0 left-0 bottom-0 w-80 bg-background border-r border-border/40 p-8 flex flex-col gap-8 shadow-2xl animate-in slide-in-from-left duration-300">
             <div className="flex justify-between items-center">
               <Link href="/" className="text-2xl font-black tracking-tighter flex items-center gap-2">
-                <span className="w-10 h-10 bg-skyblue rounded-xl flex items-center justify-center text-white">P</span>
-                <span>Vault<span className="text-skyblue">.</span></span>
+                <span className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">P</span>
+                <span className="text-foreground">Vault<span className="text-primary italic">.</span></span>
               </Link>
               <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(false)}>
-                <X className="w-6 h-6" />
+                <X className="w-6 h-6 text-foreground" />
               </Button>
             </div>
             
@@ -181,7 +164,10 @@ export const Navbar = () => {
                 <Link 
                   key={item.href} 
                   href={item.href} 
-                  className="px-4 py-3 rounded-xl hover:bg-white/5 font-medium transition-all"
+                  className={cn(
+                    "px-4 py-3 rounded-xl hover:bg-secondary font-black uppercase tracking-widest text-[10px] transition-all",
+                    pathname === item.href ? "text-primary bg-primary/5" : "text-muted-foreground"
+                  )}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.label}
@@ -190,7 +176,7 @@ export const Navbar = () => {
             </div>
 
             <div className="mt-auto space-y-4">
-               <Button className="w-full h-12 rounded-xl bg-skyblue text-white font-bold hover:bg-skyblue/90 shadow-[0_4px_12px_-4px_hsl(199_89%_48%)]">Join Community</Button>
+               <Button className="w-full h-14 rounded-xl bg-primary text-white font-black uppercase tracking-widest text-xs hover:opacity-90 shadow-lg shadow-primary/20">Join Community</Button>
             </div>
           </nav>
         </div>

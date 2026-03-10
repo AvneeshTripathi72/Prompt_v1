@@ -46,7 +46,7 @@ export default function PurchasesPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-12 h-12 border-4 border-skyblue border-t-transparent rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -56,8 +56,8 @@ export default function PurchasesPage() {
       <div className="space-y-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>
-            <h1 className="text-4xl font-bold mb-2">My Library</h1>
-            <p className="text-muted-foreground">Access all your purchased prompts and specialized guides.</p>
+            <h1 className="text-4xl font-black mb-2 tracking-tight text-foreground">My Library</h1>
+            <p className="text-muted-foreground font-medium">Access all your purchased prompts and specialized guides.</p>
           </div>
           <div className="relative w-full md:w-96">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -65,7 +65,7 @@ export default function PurchasesPage() {
               placeholder="Search your library..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-12 bg-white/5 border-white/10 rounded-xl"
+              className="pl-10 h-12 bg-secondary border-border/40 rounded-xl focus:ring-primary/20 text-foreground"
             />
           </div>
         </div>
@@ -74,8 +74,8 @@ export default function PurchasesPage() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPurchases.map((prompt) => (
-                <Card key={prompt._id} className="glass-card overflow-hidden border-white/5 rounded-3xl group">
-                  <div className="aspect-video relative overflow-hidden bg-muted">
+                <Card key={prompt._id} className="glass-card overflow-hidden border-border/40 rounded-3xl group bg-card shadow-sm hover:shadow-xl transition-all duration-300">
+                  <div className="aspect-video relative overflow-hidden bg-secondary">
                     {prompt.images?.[0] ? (
                       <img 
                         src={prompt.images[0]} 
@@ -83,35 +83,35 @@ export default function PurchasesPage() {
                         alt={prompt.title || "Untitled"}
                       />
                     ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center bg-white/5 relative group-hover:bg-white/[0.07] transition-colors">
-                        <div className="absolute inset-0 bg-gradient-to-br from-skyblue/5 via-transparent to-crimson/5 opacity-50" />
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-secondary relative group-hover:bg-muted transition-colors">
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 opacity-50" />
                         <Sparkles className="w-8 h-8 text-muted-foreground/20 mb-2 group-hover:scale-110 transition-transform duration-500" />
                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/30 relative z-10">Encoded Logic</span>
                       </div>
                     )}
                     <div className="absolute top-3 left-3 flex gap-2">
-                       <Badge className="bg-black/50 backdrop-blur-md">{prompt.platform}</Badge>
+                       <Badge className="bg-background/80 backdrop-blur-md border-border/40 text-foreground font-bold">{prompt.platform}</Badge>
                     </div>
                   </div>
                   <div className="p-6 space-y-4">
                     <div className="space-y-1">
-                      <h3 className="font-bold text-lg line-clamp-1">{prompt.title}</h3>
-                      <p className="text-xs text-muted-foreground">Category: {prompt.category}</p>
+                      <h3 className="font-black text-lg line-clamp-1 text-foreground group-hover:text-primary transition-colors">{prompt.title}</h3>
+                      <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Category: {prompt.category}</p>
                     </div>
                     
                     <div className="flex flex-col gap-2 pt-4">
                       <Link href={`/prompt/${prompt._id}`}>
-                        <Button className="w-full h-11 rounded-xl gap-2 font-bold bg-skyblue text-white hover:bg-skyblue/90 shadow-[0_10px_30px_-5px_rgba(56,189,248,0.4)] transition-all">
+                        <Button className="w-full h-11 rounded-xl gap-2 font-black uppercase tracking-widest text-[10px] bg-primary text-white hover:opacity-90 shadow-lg shadow-primary/20 transition-all">
                           <ExternalLink className="w-4 h-4" /> View Prompt
                         </Button>
                       </Link>
                       <div className="grid grid-cols-2 gap-2">
-                        <Button variant="outline" className="rounded-xl h-11 border-white/10 bg-white/5 hover:bg-white/10">
+                        <Button variant="outline" className="rounded-xl h-11 border-border/40 bg-secondary hover:bg-muted font-black uppercase tracking-widest text-[9px]">
                           <Download className="w-4 h-4 mr-2" /> Source
                         </Button>
                         <Button 
                           variant="outline" 
-                          className="rounded-xl h-11 border-white/10 bg-white/5 hover:bg-white/10 gap-2"
+                          className="rounded-xl h-11 border-border/40 bg-secondary hover:bg-muted font-black uppercase tracking-widest text-[9px] gap-2"
                           onClick={() => {
                             const url = `${window.location.origin}/prompt/${prompt._id}`;
                             navigator.clipboard.writeText(url);
@@ -131,11 +131,11 @@ export default function PurchasesPage() {
               <div className="flex justify-center items-center gap-4 pt-12">
                 <Button 
                   variant="outline" 
-                  className="rounded-xl border-white/5 bg-white/5 h-12 w-12 p-0"
+                  className="rounded-xl border-border/40 bg-secondary h-12 w-12 p-0"
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-5 h-5 text-primary" />
                 </Button>
                 
                 <div className="flex items-center gap-2">
@@ -144,8 +144,8 @@ export default function PurchasesPage() {
                       key={i + 1}
                       variant="outline"
                       className={cn(
-                        "w-12 h-12 rounded-xl border-white/5 font-black transition-all",
-                        currentPage === i + 1 ? "bg-skyblue border-skyblue text-white shadow-xl" : "bg-white/5"
+                        "w-12 h-12 rounded-xl border-border/40 font-black transition-all",
+                        currentPage === i + 1 ? "bg-primary border-primary text-white shadow-lg shadow-primary/20" : "bg-secondary"
                       )}
                       onClick={() => setCurrentPage(i + 1)}
                     >
@@ -156,26 +156,26 @@ export default function PurchasesPage() {
 
                 <Button 
                   variant="outline" 
-                  className="rounded-xl border-white/5 bg-white/5 h-12 w-12 p-0"
+                  className="rounded-xl border-border/40 bg-secondary h-12 w-12 p-0"
                   disabled={currentPage === totalPages}
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-5 h-5 text-primary" />
                 </Button>
               </div>
             )}
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-24 text-center space-y-6">
-            <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center text-muted-foreground">
+            <div className="w-24 h-24 bg-secondary rounded-full flex items-center justify-center text-muted-foreground border border-border/40">
               <ShoppingBag className="w-10 h-10" />
             </div>
             <div className="space-y-2">
-              <h3 className="text-2xl font-bold">No prompts in your library</h3>
-              <p className="text-muted-foreground max-w-xs">Start exploring our marketplace to find high-performance AI prompts.</p>
+              <h3 className="text-2xl font-black text-foreground">No prompts in your library</h3>
+              <p className="text-muted-foreground max-w-xs font-medium">Start exploring our marketplace to find high-performance AI prompts.</p>
             </div>
             <Link href="/explore">
-              <Button className="px-8 h-12 rounded-full bg-skyblue text-white hover:bg-skyblue/90 shadow-[0_10px_30px_-5px_rgba(56,189,248,0.4)]">Browse Marketplace</Button>
+              <Button className="px-8 h-12 rounded-full bg-primary text-white hover:opacity-90 shadow-lg shadow-primary/20 font-black uppercase tracking-widest text-xs">Browse Marketplace</Button>
             </Link>
           </div>
         )}

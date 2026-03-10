@@ -111,44 +111,44 @@ export default function WalletPage() {
     <div className="container mx-auto px-4 py-12 max-w-5xl">
       <div className="space-y-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">My Wallet</h1>
-            <p className="text-muted-foreground">Manage your coins and view transaction history.</p>
+          <div className="space-y-1">
+            <h1 className="text-4xl font-black tracking-tight text-foreground">My Wallet</h1>
+            <p className="text-muted-foreground font-medium">Manage your coins and view transaction history.</p>
           </div>
-          <Card className="glass-card px-8 py-6 rounded-[2rem] border-primary/20 bg-primary/5 flex items-center gap-6">
-            <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary">
+          <Card className="glass-card px-8 py-6 rounded-[2rem] border-border bg-card flex items-center gap-6 shadow-xl">
+            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary border border-border shadow-sm">
               <Wallet className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Total Balance</p>
-              <h2 className="text-3xl font-bold flex items-center gap-2">
-                {balance} <span className="text-sm font-normal text-muted-foreground">Coins</span>
+              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Total Balance</p>
+              <h2 className="text-3xl font-black tracking-tighter text-foreground flex items-center gap-2">
+                {balance} <span className="text-sm font-black text-muted-foreground/40">CR</span>
               </h2>
             </div>
           </Card>
         </div>
 
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold">Top Up Coins</h2>
+          <h2 className="text-2xl font-black tracking-tight text-foreground">Top Up Coins</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {COIN_PACKAGES.map((pkg) => (
               <Card 
                 key={pkg.coins} 
-                className={`glass-card p-8 rounded-[2rem] relative flex flex-col items-center text-center gap-6 group hover:border-primary/50 transition-all ${pkg.popular ? 'border-primary/30 ring-1 ring-primary/20' : 'border-white/5'}`}
+                className={`glass-card p-8 rounded-[2rem] bg-card relative flex flex-col items-center text-center gap-6 group hover:border-primary/50 transition-all shadow-sm hover:shadow-xl duration-500 ${pkg.popular ? 'border-primary ring-1 ring-primary/20' : 'border-border'}`}
               >
                 {pkg.popular && (
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1">Best Value</Badge>
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1.5 rounded-full font-black uppercase tracking-widest text-[9px] shadow-lg shadow-primary/20">Best Value</Badge>
                 )}
                 {pkg.bonus > 0 && (
-                  <Badge variant="secondary" className="bg-purple-500/20 text-purple-400 border-purple-500/20">+{pkg.bonus} Bonus Coins</Badge>
+                  <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/20 rounded-full font-black uppercase tracking-widest text-[9px]">+{pkg.bonus} Bonus Coins</Badge>
                 )}
                 
                 <div className="space-y-2">
-                  <h3 className="text-xl font-bold">{pkg.coins} Coins</h3>
-                  <p className="text-4xl font-bold">₹{pkg.price}</p>
+                  <h3 className="text-xl font-black text-foreground">{pkg.coins} Coins</h3>
+                  <p className="text-4xl font-black tracking-tighter text-primary">₹{pkg.price}</p>
                 </div>
 
-                <ul className="space-y-3 text-sm text-muted-foreground flex-grow w-full">
+                <ul className="space-y-3 text-sm text-muted-foreground font-medium flex-grow w-full">
                   <li className="flex items-center gap-2 justify-center">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Multi-platform access
                   </li>
@@ -156,12 +156,12 @@ export default function WalletPage() {
                     <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Verified prompts
                   </li>
                   <li className="flex items-center gap-2 justify-center">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Lifetime content storage
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Lifetime storage
                   </li>
                 </ul>
 
                 <Button 
-                  className={`w-full h-12 rounded-xl font-bold ${pkg.popular ? 'glow-primary' : 'bg-white/5 hover:bg-white/10'}`}
+                  className={`w-full h-12 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all ${pkg.popular ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-secondary border-border/40 hover:bg-muted'}`}
                   variant={pkg.popular ? "default" : "outline"}
                   onClick={() => handleCheckout(pkg)}
                 >
@@ -173,16 +173,16 @@ export default function WalletPage() {
         </div>
 
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold">History</h2>
-          <Card className="glass-card overflow-hidden border-white/5 rounded-3xl">
+          <h2 className="text-2xl font-black tracking-tight text-foreground">History</h2>
+          <Card className="glass-card overflow-hidden border-border rounded-3xl bg-card shadow-sm">
             <Table>
-              <TableHeader className="bg-white/5">
-                <TableRow className="hover:bg-transparent border-white/5 h-14">
-                  <TableHead className="w-[150px]">Date</TableHead>
-                  <TableHead>Activity</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
-                  <TableHead className="text-right">Status</TableHead>
+              <TableHeader className="bg-secondary">
+                <TableRow className="hover:bg-transparent border-border h-14">
+                  <TableHead className="w-[150px] font-black uppercase tracking-widest text-[10px] text-muted-foreground pl-10">Date</TableHead>
+                  <TableHead className="font-black uppercase tracking-widest text-[10px] text-muted-foreground">Activity</TableHead>
+                  <TableHead className="font-black uppercase tracking-widest text-[10px] text-muted-foreground">Type</TableHead>
+                  <TableHead className="text-right font-black uppercase tracking-widest text-[10px] text-muted-foreground">Amount</TableHead>
+                  <TableHead className="text-right pr-10 font-black uppercase tracking-widest text-[10px] text-muted-foreground">Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -191,24 +191,24 @@ export default function WalletPage() {
                   { date: "Oct 22, 2023", activity: "Wallet Top-up", type: "topup", amount: 500, status: "Success" },
                   { date: "Oct 20, 2023", activity: "Sold 'Minimalist Logo Generator'", type: "sale", amount: 45, status: "Success" },
                 ].map((row, i) => (
-                  <TableRow key={i} className="border-white/5 h-16 hover:bg-white/5 transition-colors">
-                    <TableCell className="font-medium text-muted-foreground">{row.date}</TableCell>
-                    <TableCell className="font-semibold">{row.activity}</TableCell>
+                  <TableRow key={i} className="border-border h-20 hover:bg-secondary/50 transition-colors group">
+                    <TableCell className="font-bold text-muted-foreground pl-10">{row.date}</TableCell>
+                    <TableCell className="font-black text-foreground group-hover:text-primary transition-colors">{row.activity}</TableCell>
                     <TableCell>
-                      <Badge variant="outline" className={`rounded-full ${
-                        row.type === 'purchase' ? 'border-red-500/20 text-red-400 bg-red-500/5' : 
-                        row.type === 'topup' ? 'border-green-500/20 text-green-400 bg-green-500/5' : 
-                        'border-blue-500/20 text-blue-400 bg-blue-500/5'
+                      <Badge variant="outline" className={`rounded-lg border-border/40 dark:border-white/10 font-black uppercase tracking-widest text-[8px] ${
+                        row.type === 'purchase' ? 'text-red-500 bg-red-500/5' : 
+                        row.type === 'topup' ? 'text-emerald-500 bg-emerald-500/5' : 
+                        'text-primary bg-primary/5'
                       }`}>
                         {row.type}
                       </Badge>
                     </TableCell>
-                    <TableCell className={`text-right font-bold ${row.amount > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    <TableCell className={`text-right font-black text-lg tracking-tight ${row.amount > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
                       {row.amount > 0 ? `+${row.amount}` : row.amount}
                     </TableCell>
-                    <TableCell className="text-right">
-                      <span className="inline-flex items-center gap-1.5 text-xs text-green-500">
-                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /> {row.status}
+                    <TableCell className="text-right pr-10">
+                      <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-emerald-500">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> {row.status}
                       </span>
                     </TableCell>
                   </TableRow>

@@ -44,7 +44,7 @@ export const PromptCard = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <Link href={`/prompt/${id}`} className="block h-full">
-        <Card className="glass-card h-full overflow-hidden rounded-2xl flex flex-col border-border/40 bg-card hover:shadow-xl transition-all duration-300">
+        <Card className="glass-card h-full overflow-hidden rounded-2xl flex flex-col border-border bg-card transition-all duration-300">
           {/* Image Section - 3:4 Aspect Ratio */}
           <div className="relative aspect-[3/4] bg-muted/30 overflow-hidden">
             <AnimatePresence mode="wait">

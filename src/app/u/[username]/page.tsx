@@ -51,9 +51,9 @@ export default function SellerProfilePage({ params: paramsPromise }: { params: P
   if (loading) {
     return (
       <div className="container mx-auto px-6 py-16 max-w-7xl animate-pulse space-y-16">
-        <div className="h-64 bg-white/5 rounded-[4rem]" />
+        <div className="h-64 bg-secondary rounded-[4rem]" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {[1, 2, 3, 4].map(i => <div key={i} className="h-[400px] bg-white/5 rounded-[2.5rem]" />)}
+          {[1, 2, 3, 4].map(i => <div key={i} className="h-[400px] bg-secondary rounded-[2.5rem]" />)}
         </div>
       </div>
     );
@@ -66,10 +66,10 @@ export default function SellerProfilePage({ params: paramsPromise }: { params: P
   return (
     <div className="container mx-auto px-6 py-16 max-w-7xl">
       <div className="space-y-16">
-        <div className="glass-panel p-12 md:p-16 rounded-[4rem] border-white/5 relative overflow-hidden shadow-3xl">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-skyblue/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="glass-card p-12 md:p-16 rounded-[4rem] border-border/40 relative overflow-hidden shadow-xl bg-card">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="flex flex-col md:flex-row items-center md:items-start gap-12 relative z-10">
-            <div className="w-44 h-44 rounded-[3rem] overflow-hidden border-2 border-skyblue/20 p-1.5 shadow-2xl group flex items-center justify-center bg-white/5">
+            <div className="w-44 h-44 rounded-[3rem] overflow-hidden border-2 border-primary/20 p-1.5 shadow-xl group flex items-center justify-center bg-secondary">
               {user.avatar ? (
                 <img 
                   src={user.avatar} 
@@ -77,8 +77,8 @@ export default function SellerProfilePage({ params: paramsPromise }: { params: P
                   alt="Profile"
                 />
               ) : (
-                <div className="w-full h-full rounded-[2.8rem] bg-skyblue/10 flex items-center justify-center">
-                  <span className="text-4xl font-black text-skyblue/30">{user.username[0]?.toUpperCase()}</span>
+                <div className="w-full h-full rounded-[2.8rem] bg-primary/10 flex items-center justify-center">
+                  <span className="text-4xl font-black text-primary/30">{user.username[0]?.toUpperCase()}</span>
                 </div>
               )}
             </div>
@@ -86,10 +86,10 @@ export default function SellerProfilePage({ params: paramsPromise }: { params: P
             <div className="flex-grow text-center md:text-left space-y-8">
               <div className="space-y-4">
                 <div className="flex flex-col md:flex-row md:items-center gap-6 justify-center md:justify-start">
-                  <h1 className="text-5xl font-black tracking-tighter">@{user.username}</h1>
-                  <Badge className="w-fit mx-auto md:mx-0 bg-skyblue/10 text-skyblue border-skyblue/20 px-4 py-1.5 rounded-xl font-black uppercase tracking-widest text-[9px]">Elite Engineer</Badge>
+                  <h1 className="text-5xl font-black tracking-tighter text-foreground">@{user.username}</h1>
+                  <Badge className="w-fit mx-auto md:mx-0 bg-primary/10 text-primary border-primary/20 px-4 py-1.5 rounded-xl font-black uppercase tracking-widest text-[9px]">Elite Engineer</Badge>
                 </div>
-                <p className="text-xl text-muted-foreground/80 font-medium max-w-2xl leading-relaxed italic">
+                <p className="text-xl text-card-foreground font-medium max-w-2xl leading-relaxed italic">
                   "{user.bio || "No biography available."}"
                 </p>
               </div>
@@ -97,45 +97,45 @@ export default function SellerProfilePage({ params: paramsPromise }: { params: P
               <div className="flex items-center justify-center md:justify-start gap-10">
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Quality</span>
-                  <div className="flex items-center gap-2 font-black text-2xl tracking-tighter">
-                    <Star className="w-5 h-5 text-skyblue fill-current" /> 4.98
+                  <div className="flex items-center gap-2 font-black text-2xl tracking-tighter text-foreground">
+                    <Star className="w-5 h-5 text-primary fill-current" /> 4.98
                   </div>
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Output</span>
-                  <div className="flex items-center gap-2 font-black text-2xl tracking-tighter">
-                    <Globe className="w-5 h-5 text-skyblue" /> {totalSales}+
+                  <div className="flex items-center gap-2 font-black text-2xl tracking-tighter text-foreground">
+                    <Globe className="w-5 h-5 text-primary" /> {totalSales}+
                   </div>
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Expertise</span>
-                  <div className="flex items-center gap-2 font-black text-2xl tracking-tighter">
-                    <Zap className="w-5 h-5 text-skyblue" /> L5
+                  <div className="flex items-center gap-2 font-black text-2xl tracking-tighter text-foreground">
+                    <Zap className="w-5 h-5 text-primary" /> L5
                   </div>
                 </div>
               </div>
 
               <div className="flex justify-center md:justify-start gap-4">
-                <Button variant="outline" className="h-12 w-12 rounded-2xl border-white/5 bg-white/5 hover:border-skyblue/30 transition-all p-0"><Twitter className="w-4 h-4 text-skyblue" /></Button>
-                <Button variant="outline" className="h-12 w-12 rounded-2xl border-white/5 bg-white/5 hover:border-skyblue/30 transition-all p-0"><Github className="w-4 h-4 text-skyblue" /></Button>
-                <Button variant="outline" className="h-12 w-12 rounded-2xl border-white/5 bg-white/5 hover:border-skyblue/30 transition-all p-0"><Share2 className="w-4 h-4 text-skyblue" /></Button>
+                <Button variant="outline" className="h-12 w-12 rounded-2xl border-border/40 bg-secondary hover:border-primary/30 transition-all p-0 shadow-sm"><Twitter className="w-4 h-4 text-primary" /></Button>
+                <Button variant="outline" className="h-12 w-12 rounded-2xl border-border/40 bg-secondary hover:border-primary/30 transition-all p-0 shadow-sm"><Github className="w-4 h-4 text-primary" /></Button>
+                <Button variant="outline" className="h-12 w-12 rounded-2xl border-border/40 bg-secondary hover:border-primary/30 transition-all p-0 shadow-sm"><Share2 className="w-4 h-4 text-primary" /></Button>
               </div>
             </div>
 
             <div className="flex flex-col gap-4 w-full md:w-auto">
-              <Button className="h-16 rounded-[2rem] px-10 font-black uppercase tracking-widest text-xs bg-skyblue text-white shadow-[0_15px_40px_-10px_rgba(56,189,248,0.5)] transition-all hover:scale-105">Verify Connection</Button>
-              <Button variant="outline" className="h-16 rounded-[2rem] px-10 font-black uppercase tracking-widest text-xs border-white/5 hover:bg-white/5">Signal Creator</Button>
+              <Button className="h-16 rounded-[2rem] px-10 font-black uppercase tracking-widest text-xs bg-primary text-white shadow-lg shadow-primary/20 transition-all hover:scale-105">Verify Connection</Button>
+              <Button variant="outline" className="h-16 rounded-[2rem] px-10 font-black uppercase tracking-widest text-xs border-border/40 bg-secondary hover:bg-muted font-bold">Signal Creator</Button>
             </div>
           </div>
         </div>
 
         <div className="space-y-12">
-          <div className="flex justify-between items-end border-b border-white/5 pb-8">
+          <div className="flex justify-between items-end border-b border-border/40 pb-8">
             <div className="space-y-2">
-              <h2 className="text-3xl font-black tracking-tight">Logic Inventory</h2>
+              <h2 className="text-3xl font-black tracking-tight text-foreground">Logic Inventory</h2>
               <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">A curated catalog of verified instructions</p>
             </div>
-            <span className="text-xs font-black text-skyblue bg-skyblue/5 px-4 py-2 rounded-xl border border-skyblue/10">{sellerPrompts.length} Assets Found</span>
+            <span className="text-xs font-black text-primary bg-primary/5 px-4 py-2 rounded-xl border border-primary/10">{sellerPrompts.length} Assets Found</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {sellerPrompts.map((prompt) => (

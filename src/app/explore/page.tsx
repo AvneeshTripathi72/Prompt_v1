@@ -99,7 +99,7 @@ function ExploreContent() {
   return (
     <div className="container mx-auto px-6 py-8 max-w-[1400px]">
       <div className="space-y-10">
-        <div className="flex flex-col md:flex-row justify-between items-end gap-6 pb-6 border-b border-border/40">
+        <div className="flex flex-col md:flex-row justify-between items-end gap-6 pb-6 border-b border-border">
           <div className="space-y-1">
             <h1 className="text-4xl font-black tracking-tight text-foreground">
               Market <span className="text-primary italic">Logic</span>
@@ -109,7 +109,7 @@ function ExploreContent() {
           
           <div className="flex flex-wrap items-center gap-3">
             <Tabs value={activeCategory} className="w-full sm:w-fit">
-              <TabsList className="bg-muted/50 border border-border/50 p-1 h-10 rounded-lg flex overflow-x-auto scrollbar-hide">
+              <TabsList className="bg-secondary border border-border p-1 h-10 rounded-lg flex overflow-x-auto scrollbar-hide">
                 {CATEGORIES.map((cat) => (
                   <TabsTrigger 
                     key={cat} 
@@ -128,7 +128,7 @@ function ExploreContent() {
               size="sm"
               onClick={() => setShowFilters(!showFilters)}
               className={cn(
-                "h-10 rounded-lg px-5 gap-2 font-bold text-[11px] uppercase tracking-widest border-border/50",
+                "h-10 rounded-lg px-5 gap-2 font-bold text-[11px] uppercase tracking-widest border-border",
                 showFilters ? "bg-primary/5 text-primary border-primary/30" : "bg-background text-foreground hover:bg-muted"
               )}
             >
@@ -144,7 +144,7 @@ function ExploreContent() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden bg-muted/30 p-8 rounded-2xl border border-border/40"
+              className="overflow-hidden bg-secondary p-8 rounded-2xl border border-border"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                 {/* ... existing filters ... */}
@@ -223,8 +223,8 @@ function ExploreContent() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {loading ? (
-            Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-[400px] rounded-[2.5rem] bg-white/5 animate-pulse border border-white/5" />
+            Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-[400px] rounded-[2.5rem] bg-secondary animate-pulse border border-border" />
             ))
           ) : (
             paginatedPrompts.map((prompt: any) => (
@@ -253,7 +253,7 @@ function ExploreContent() {
           <div className="flex flex-col items-center justify-center py-40 text-center space-y-4">
             <Search className="w-16 h-16 text-muted-foreground/20" />
             <div className="space-y-1">
-              <p className="text-2xl font-black">No matches found</p>
+              <p className="text-2xl font-black text-foreground">No matches found</p>
               <p className="text-muted-foreground font-medium">Try broadening your search or resetting filters.</p>
             </div>
           </div>
@@ -263,11 +263,11 @@ function ExploreContent() {
           <div className="flex justify-center items-center gap-4 pt-12">
             <Button 
               variant="outline" 
-              className="rounded-xl border-white/5 bg-white/5 h-12 w-12 p-0"
+              className="rounded-xl border-border bg-card h-12 w-12 p-0 shadow-sm transition-all hover:bg-secondary"
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-5 h-5 text-primary" />
             </Button>
             
             <div className="flex items-center gap-2">
@@ -276,8 +276,8 @@ function ExploreContent() {
                   key={i + 1}
                   variant="outline"
                   className={cn(
-                    "w-12 h-12 rounded-xl border-white/5 font-black transition-all",
-                    currentPage === i + 1 ? "bg-skyblue border-skyblue text-white shadow-xl" : "bg-white/5"
+                    "w-12 h-12 rounded-xl border-border font-black transition-all",
+                    currentPage === i + 1 ? "bg-primary border-primary text-white shadow-lg shadow-primary/20" : "bg-card hover:bg-secondary"
                   )}
                   onClick={() => setCurrentPage(i + 1)}
                 >
@@ -288,11 +288,11 @@ function ExploreContent() {
 
             <Button 
               variant="outline" 
-              className="rounded-xl border-white/5 bg-white/5 h-12 w-12 p-0"
+              className="rounded-xl border-border bg-card h-12 w-12 p-0 shadow-sm transition-all hover:bg-secondary"
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-5 h-5 text-primary" />
             </Button>
           </div>
         )}
@@ -305,7 +305,7 @@ export default function ExplorePage() {
   return (
     <Suspense fallback={
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-12 h-12 border-4 border-skyblue border-t-transparent rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     }>
       <ExploreContent />

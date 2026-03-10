@@ -39,7 +39,7 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col gap-24 pb-24">
       {/* Hero Section */}
-      <section className="relative pt-24 pb-12 overflow-hidden">
+      <section className="relative pt-24 pb-12 overflow-hidden hero-gradient">
         <div className="container mx-auto px-6">
           <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-8">
             <motion.div
@@ -53,7 +53,7 @@ export default function LandingPage() {
               <h1 className="text-6xl md:text-7xl font-black tracking-tight leading-[0.9] text-foreground">
                 Engineered <span className="text-primary italic">Intelligence</span> for Modern Creators.
               </h1>
-              <p className="text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed">
+              <p className="text-xl text-card-foreground font-medium max-w-2xl mx-auto leading-relaxed">
                 Discover, buy, and sell high-performance prompts crafted by leading AI engineers. 
                 Built for quality, performance, and scale.
               </p>
@@ -66,12 +66,12 @@ export default function LandingPage() {
               className="flex flex-wrap justify-center gap-4"
             >
               <Link href="/explore">
-                <Button size="lg" className="h-14 px-10 rounded-xl bg-primary text-primary-foreground font-bold text-base hover:translate-y-[-2px] hover:shadow-xl transition-all">
+                <Button size="lg" className="h-14 px-10 rounded-xl bg-primary text-primary-foreground font-bold text-base hover:shadow-xl transition-all">
                   Browse Market
                 </Button>
               </Link>
               <Link href="/sell">
-                <Button size="lg" variant="outline" className="h-14 px-10 rounded-xl border-border/50 bg-background/50 font-bold text-base hover:bg-muted transition-all">
+                <Button size="lg" variant="outline" className="h-14 px-10 rounded-xl border-border/50 bg-secondary/50 font-bold text-base hover:bg-secondary transition-all">
                   Start Selling
                 </Button>
               </Link>
@@ -82,9 +82,9 @@ export default function LandingPage() {
 
       {/* Trending Section */}
       <section className="container mx-auto px-6 max-w-[1400px]">
-        <div className="bg-muted/30 p-8 md:p-12 rounded-[2.5rem] border border-border/40 shadow-sm">
+        <div className="bg-card p-8 md:p-12 rounded-[2.5rem] border border-border/40 shadow-sm">
           {loading ? (
-            <div className="h-[480px] rounded-3xl bg-muted/50 animate-pulse" />
+            <div className="h-[480px] rounded-3xl bg-secondary animate-pulse" />
           ) : (
             <TrendingSlider prompts={prompts} />
           )}
@@ -100,13 +100,13 @@ export default function LandingPage() {
             { icon: Shield, step: "Verify", desc: "Every prompt is vetted against community benchmarks for reliability." },
             { icon: Wallet, step: "Succeed", desc: "Automated payouts for creators in a transparent digital ecosystem." },
           ].map((item, i) => (
-            <div key={i} className="flex flex-col gap-4 p-6 rounded-2xl border border-border/40 bg-card/50">
+            <div key={i} className="flex flex-col gap-4 p-8 rounded-2xl border border-border/40 bg-card shadow-sm hover:shadow-md transition-shadow">
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
                 <item.icon className="w-6 h-6 text-primary" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-lg font-bold tracking-tight">{item.step}</h3>
-                <p className="text-sm text-muted-foreground font-medium leading-relaxed">{item.desc}</p>
+                <h3 className="text-lg font-bold tracking-tight text-foreground">{item.step}</h3>
+                <p className="text-sm text-card-foreground font-medium leading-relaxed">{item.desc}</p>
               </div>
             </div>
           ))}
