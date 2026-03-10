@@ -97,41 +97,24 @@ function ExploreContent() {
   };
 
   return (
-    <div className="container mx-auto px-6 py-10 max-w-[1500px]">
-      <div className="space-y-8">
-        <div className="glass-card p-6 rounded-2xl border-border/50 shadow-sm space-y-8">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-            <div className="space-y-2">
-              <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-none">
-                Explore <span className="text-primary">Logic</span>
-              </h1>
-              <div className="flex items-center gap-4">
-                <Button 
-                  onClick={() => setShowFilters(!showFilters)}
-                  className={cn(
-                    "h-10 rounded-xl px-6 gap-2 font-bold uppercase tracking-widest text-[10px] transition-all duration-300",
-                    showFilters 
-                      ? "bg-destructive text-destructive-foreground shadow-sm" 
-                      : "bg-primary text-primary-foreground hover:opacity-90 shadow-sm"
-                  )}
-                >
-                  <SlidersHorizontal className={cn("w-3.5 h-3.5", showFilters ? "animate-spin-slow" : "")} /> 
-                  {showFilters ? "Close Filters" : "Filter Logic"}
-                </Button>
-                <div className="h-4 w-px bg-border hidden md:block" />
-                <p className="text-muted-foreground font-black text-[10px] uppercase tracking-widest opacity-60 hidden md:block">
-                  {totalItems} Available
-                </p>
-              </div>
-            </div>
-            
-            <Tabs value={activeCategory} className="w-full lg:w-fit">
-              <TabsList className="bg-muted border border-border p-1 h-12 rounded-xl flex overflow-x-auto scrollbar-hide">
+    <div className="container mx-auto px-6 py-8 max-w-[1400px]">
+      <div className="space-y-10">
+        <div className="flex flex-col md:flex-row justify-between items-end gap-6 pb-6 border-b border-border/40">
+          <div className="space-y-1">
+            <h1 className="text-4xl font-black tracking-tight text-foreground">
+              Market <span className="text-primary italic">Logic</span>
+            </h1>
+            <p className="text-muted-foreground text-sm font-medium">Explore engineered prompts from master creators.</p>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-3">
+            <Tabs value={activeCategory} className="w-full sm:w-fit">
+              <TabsList className="bg-muted/50 border border-border/50 p-1 h-10 rounded-lg flex overflow-x-auto scrollbar-hide">
                 {CATEGORIES.map((cat) => (
                   <TabsTrigger 
                     key={cat} 
                     value={cat}
-                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-6 font-bold text-[10px] uppercase tracking-widest transition-all"
+                    className="rounded-md data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-5 font-bold text-[11px] uppercase tracking-wider transition-all"
                     onClick={() => setActiveCategory(cat)}
                   >
                     {cat}
@@ -139,138 +122,106 @@ function ExploreContent() {
                 ))}
               </TabsList>
             </Tabs>
+            
+            <Button 
+              variant="outline"
+              size="sm"
+              onClick={() => setShowFilters(!showFilters)}
+              className={cn(
+                "h-10 rounded-lg px-5 gap-2 font-bold text-[11px] uppercase tracking-widest border-border/50",
+                showFilters ? "bg-primary/5 text-primary border-primary/30" : "bg-background text-foreground hover:bg-muted"
+              )}
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" /> 
+              Filters
+            </Button>
           </div>
-
-          <AnimatePresence>
-            {showFilters && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="pt-10 space-y-12">
-                  <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent w-full" />
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
-                    <div className="space-y-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-skyblue animate-pulse" />
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Select Platform</label>
-                      </div>
-                      <div className="grid grid-cols-2 gap-3">
-                        {PLATFORMS.map((platform) => (
-                          <Button
-                            key={platform}
-                            variant="outline"
-                            size="sm"
-                            className={cn(
-                              "rounded-2xl h-12 border-white/5 font-black text-[10px] uppercase tracking-widest transition-all duration-500",
-                              selectedPlatforms.includes(platform) 
-                                ? "bg-skyblue text-white shadow-[0_10px_30px_-10px_rgba(56,189,248,0.5)] border-skyblue scale-105" 
-                                : "bg-white/5 hover:bg-white/10 hover:border-white/20"
-                            )}
-                            onClick={() => togglePlatform(platform)}
-                          >
-                            {platform}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="space-y-8">
-                      <div className="flex justify-between items-center">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Price (Coins)</label>
-                        <span className="text-skyblue font-black text-xs tracking-tighter bg-skyblue/10 px-3 py-1 rounded-lg">
-                          {priceRange[0]} — {priceRange[1]}
-                        </span>
-                      </div>
-                      <div className="px-2">
-                        <Slider 
-                          value={priceRange} 
-                          max={1000} 
-                          step={10} 
-                          onValueChange={setPriceRange}
-                          className="py-4"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-6">
-                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Min Star Rating</label>
-                      <div className="flex justify-between gap-3">
-                        {[4, 3, 2, 1].map((rating) => (
-                          <Button
-                            key={rating}
-                            variant="outline"
-                            size="sm"
-                            className={cn(
-                              "rounded-2xl h-12 flex-grow border-white/5 font-black text-sm transition-all duration-500",
-                              minRating === rating 
-                                ? "bg-skyblue text-white border-skyblue shadow-xl scale-110 z-10" 
-                                : "bg-white/5 hover:bg-white/10"
-                            )}
-                            onClick={() => setMinRating(minRating === rating ? null : rating)}
-                          >
-                            {rating}<Star className={cn("w-3 h-3 ml-1", minRating === rating ? "fill-current" : "opacity-30")} />
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="space-y-6">
-                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Sort By</label>
-                      <div className="flex gap-3">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="outline" className="h-12 rounded-2xl bg-white/5 border-white/10 gap-3 font-black px-6 flex-grow text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
-                              {sortBy} <ChevronDown className="w-4 h-4 text-skyblue" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent className="glass-panel p-2 rounded-2xl border-white/10 min-w-[240px] z-[100] shadow-3xl">
-                            {["Newest First", "Price: Low to High", "Price: High to Low", "Most Purchased"].map((option) => (
-                              <DropdownMenuItem 
-                                key={option}
-                                className={cn(
-                                  "p-4 rounded-xl font-black text-[10px] uppercase tracking-widest cursor-pointer mb-1 last:mb-0 transition-all",
-                                  sortBy === option ? "bg-skyblue text-white shadow-lg" : "hover:bg-white/10"
-                                )}
-                                onClick={() => setSortBy(option)}
-                              >
-                                {option}
-                              </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                        <Button 
-                          variant="outline" 
-                          size="icon" 
-                          className="h-12 w-12 rounded-2xl border-white/10 hover:border-crimson hover:text-crimson bg-white/5 transition-all duration-500 group"
-                          onClick={handleReset}
-                        >
-                          <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex flex-col items-center gap-6 pt-4">
-                    <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent w-64" />
-                    <Button 
-                      onClick={() => setShowFilters(false)}
-                      className="h-13 px-12 rounded-2xl bg-skyblue text-white font-black uppercase tracking-[0.15em] text-[10px] shadow-[0_10px_30px_-5px_rgba(56,189,248,0.4)] hover:shadow-[0_15px_40px_-5px_rgba(56,189,248,0.6)] hover:scale-105 active:scale-95 transition-all duration-300 group relative overflow-hidden"
-                    >
-                      <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                      <span className="relative">Show Results</span>
-                    </Button>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <AnimatePresence>
+          {showFilters && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden bg-muted/30 p-8 rounded-2xl border border-border/40"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                {/* ... existing filters ... */}
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-60">Platform</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {PLATFORMS.map((platform) => (
+                      <Button
+                        key={platform}
+                        variant="outline"
+                        size="sm"
+                        className={cn(
+                          "rounded-lg h-9 border-border/40 font-bold text-[10px] uppercase tracking-wider transition-all",
+                          selectedPlatforms.includes(platform) ? "bg-primary text-white border-primary" : "bg-background hover:bg-muted"
+                        )}
+                        onClick={() => togglePlatform(platform)}
+                      >
+                        {platform}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-60">Price Range</label>
+                  <Slider value={priceRange} max={1000} step={10} onValueChange={setPriceRange} className="py-2" />
+                  <div className="flex justify-between text-[11px] font-bold text-muted-foreground">
+                    <span>₹{priceRange[0]}</span>
+                    <span>₹{priceRange[1]}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-60">Min Rating</label>
+                  <div className="flex gap-2">
+                    {[4, 3, 2, 1].map((rating) => (
+                      <Button
+                        key={rating}
+                        variant="outline"
+                        size="sm"
+                        className={cn(
+                          "rounded-lg h-9 flex-grow border-border/40 font-bold text-xs",
+                          minRating === rating ? "bg-primary text-white border-primary" : "bg-background hover:bg-muted"
+                        )}
+                        onClick={() => setMinRating(minRating === rating ? null : rating)}
+                      >
+                        {rating}★
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-60">Sort Direction</label>
+                  <div className="flex gap-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="h-9 rounded-lg bg-background border-border/40 gap-2 font-bold px-4 flex-grow text-[10px] uppercase tracking-wider">
+                          {sortBy} <ChevronDown className="w-3 h-3 text-primary" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="p-1 rounded-lg border-border/40 min-w-[200px]">
+                        {["Newest First", "Price: Low to High", "Price: High to Low", "Most Purchased"].map((option) => (
+                          <DropdownMenuItem key={option} className="text-[10px] font-bold uppercase tracking-wider p-2 cursor-pointer" onClick={() => setSortBy(option)}>
+                            {option}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {loading ? (
             Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="h-[400px] rounded-[2.5rem] bg-white/5 animate-pulse border border-white/5" />

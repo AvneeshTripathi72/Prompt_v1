@@ -7,6 +7,7 @@ import { Button } from "./ui/button";
 import { useState, useEffect } from "react";
 import { Input } from "./ui/input";
 import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils";
 
 export const Navbar = () => {
   const { theme, setTheme } = useTheme();
@@ -63,69 +64,92 @@ export const Navbar = () => {
   return (
     <>
       <nav
-        className={`sticky top-0 z-40 transition-all duration-300 ${
-          scrolled ? "bg-background/80 backdrop-blur-md border-b border-white/5" : "bg-transparent"
-        }`}
+        className={cn(
+          "sticky top-0 z-40 transition-all duration-300",
+          scrolled ? "bg-background/80 backdrop-blur-md border-b border-border/40" : "bg-transparent"
+        )}
       >
-        <div className="px-5 h-16 flex items-center justify-between gap-8">
-          <div className="flex items-center gap-4 lg:hidden">
-            <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(true)}>
-              <Menu className="w-6 h-6" />
-            </Button>
-            <Link href="/" className="text-xl font-bold tracking-tighter flex items-center gap-2">
-              <span className="w-8 h-8 bg-skyblue rounded-lg flex items-center justify-center text-white">P</span>
+        <div className="container mx-auto px-6 h-16 flex items-center justify-between gap-8">
+          <div className="flex items-center gap-6">
+            <Link href="/" className="text-xl font-black tracking-tighter flex items-center gap-2">
+              <span className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/20">P</span>
+              <span className="hidden sm:inline-block">Vault<span className="text-primary italic">.</span></span>
             </Link>
+
+            <div className="hidden lg:flex items-center gap-1">
+              {[
+                { label: "Explore", href: "/explore" },
+                { label: "Sell", href: "/sell" },
+                { label: "Dashboard", href: "/dashboard" },
+              ].map((link) => (
+                <Link 
+                  key={link.href} 
+                  href={link.href}
+                  className={cn(
+                    "px-4 py-2 rounded-lg text-sm font-bold transition-all",
+                    pathname === link.href ? "text-primary bg-primary/5" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </div>
 
-          <div className="hidden md:flex flex-1 max-w-xl relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-skyblue transition-colors" />
+          <div className="flex-1 max-w-md hidden md:flex relative group">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
             <Input 
-              placeholder="Search prompts, engineers, collections..." 
+              placeholder="Search assets..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={handleSearch}
-              className="pl-12 h-12 bg-white/5 border-white/5 rounded-2xl focus:ring-skyblue/20 focus:border-skyblue/30 transition-all text-sm"
+              className="pl-10 h-10 bg-muted/50 border-border/40 rounded-xl focus:ring-primary/20 focus:border-primary/30 transition-all text-sm font-medium"
             />
           </div>
 
-          <div className="flex items-center gap-6">
-            <Link href="/wallet" className="hidden sm:flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-2xl border border-white/10 transition-colors">
-              <Wallet className="w-4 h-4 text-crimson" />
+          <div className="flex items-center gap-2">
+            <Link href="/wallet" className="hidden sm:flex items-center gap-2 hover:bg-muted p-1.5 px-3 rounded-lg border border-border/40 transition-all">
+              <Wallet className="w-4 h-4 text-primary" />
               <span className="text-sm font-bold">{balance}</span>
             </Link>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               {mounted && (
                 <Button 
                   variant="ghost" 
                   size="icon" 
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="text-muted-foreground hover:text-primary transition-colors h-10 w-10 rounded-xl bg-white/5 border border-white/5"
+                  className="text-muted-foreground hover:text-primary transition-colors h-10 w-10 rounded-lg hover:bg-muted"
                 >
-                  {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                  {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                 </Button>
               )}
-              <Button variant="ghost" size="icon" className="hidden sm:flex text-muted-foreground hover:text-skyblue">
-                <Bell className="w-5 h-5" />
-              </Button>
+              
+              <div className="h-4 w-px bg-border/40 mx-1 hidden sm:block" />
+
               {isLoggedIn ? (
                 <Button 
                   variant="outline" 
+                  size="sm"
                   onClick={() => {
                     document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
                     window.location.reload();
                   }}
-                  className="rounded-2xl px-6 h-11 border-white/10 hover:bg-white/5 transition-all font-bold"
+                  className="rounded-lg px-5 h-10 border-border/40 hover:bg-muted transition-all font-bold text-xs uppercase tracking-widest"
                 >
                   Logout
                 </Button>
               ) : (
                 <Link href="/auth">
-                  <Button variant="default" className="rounded-2xl px-6 h-11 bg-crimson text-white hover:bg-crimson/90 shadow-[0_4px_15px_-3px_hsla(0,60%,70%,0.4)] transition-all font-bold">
-                    Join Now
+                  <Button size="sm" className="rounded-lg px-5 h-10 bg-primary text-primary-foreground hover:opacity-90 shadow-lg shadow-primary/20 transition-all font-bold text-xs uppercase tracking-widest">
+                    Sign In
                   </Button>
                 </Link>
               )}
+              
+              <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMobileMenuOpen(true)}>
+                <Menu className="w-5 h-5" />
+              </Button>
             </div>
           </div>
         </div>

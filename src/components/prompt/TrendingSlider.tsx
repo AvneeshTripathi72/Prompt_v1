@@ -62,35 +62,35 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
   const currentFeatured = featuredPrompts[activeFeaturedIndex];
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-12">
       <div className="relative group">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-crimson/20 rounded-2xl flex items-center justify-center border border-crimson/20 shadow-[0_0_20px_-5px_hsl(0_60%_70%_/_0.3)]">
-              <Flame className="w-6 h-6 text-crimson fill-current" />
+            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
+              <Flame className="w-5 h-5 text-primary fill-current" />
             </div>
             <div>
-              <h2 className="text-3xl font-black tracking-tight flex items-center gap-3">Trending <span className="text-crimson">Logic</span></h2>
-              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest opacity-50">Hot Architectures This Minute</p>
+              <h2 className="text-2xl font-black tracking-tight">Trending <span className="text-primary italic">Now</span></h2>
+              <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest opacity-60">Handpicked by community experts</p>
             </div>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <Button 
               variant="outline" 
               size="icon" 
-              className="w-12 h-12 rounded-2xl border-white/5 bg-background/50 backdrop-blur-sm hover:bg-crimson hover:text-white transition-all"
+              className="w-10 h-10 rounded-xl border-border/40 bg-background/50 hover:bg-primary hover:text-white transition-all shadow-sm"
               onClick={() => setActiveFeaturedIndex((prev) => (prev - 1 + featuredPrompts.length) % featuredPrompts.length)}
             >
-              <ChevronLeft className="w-6 h-6" />
+              <ChevronLeft className="w-5 h-5" />
             </Button>
             <Button 
               variant="outline" 
               size="icon" 
-              className="w-12 h-12 rounded-2xl border-white/5 bg-background/50 backdrop-blur-sm hover:bg-crimson hover:text-white transition-all"
+              className="w-10 h-10 rounded-xl border-border/40 bg-background/50 hover:bg-primary hover:text-white transition-all shadow-sm"
               onClick={() => setActiveFeaturedIndex((prev) => (prev + 1) % featuredPrompts.length)}
             >
-              <ChevronRight className="w-6 h-6" />
+              <ChevronRight className="w-5 h-5" />
             </Button>
           </div>
         </div>
@@ -99,62 +99,33 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
           <Link href={`/prompt/${currentFeatured.id || currentFeatured._id}`}>
             <motion.div
               key={currentFeatured.id || currentFeatured._id}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
             >
-              <Card className="glass-card group/card overflow-hidden rounded-[2.5rem] h-[480px] flex flex-col md:flex-row relative premium-shadow border-white/5 hover:border-skyblue/30 transition-all duration-700">
-                <div className="absolute top-10 left-10 z-30">
-                  <div className="w-20 h-20 bg-crimson rounded-3xl flex items-center justify-center border-4 border-white/10 font-black text-5xl text-white shadow-2xl animate-float">
-                    {activeFeaturedIndex + 1}
-                  </div>
-                </div>
-
-                <div className="absolute bottom-10 right-10 z-30 flex gap-2">
-                  {featuredPrompts.map((_, i) => (
-                    <button 
-                      key={i}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setActiveFeaturedIndex(i);
-                      }}
-                      className={cn(
-                        "h-1.5 rounded-full transition-all duration-500",
-                        i === activeFeaturedIndex ? "w-8 bg-crimson" : "w-1.5 bg-white/20 hover:bg-white/40"
-                      )}
-                    />
-                  ))}
-                </div>
-
-                <div className="md:w-3/5 relative h-full bg-muted overflow-hidden">
+              <Card className="glass-card overflow-hidden rounded-[2rem] h-[500px] flex flex-col md:flex-row relative border-border/40 hover:border-primary/40 transition-all duration-500 shadow-xl">
+                <div className="md:w-3/5 h-[300px] md:h-full relative bg-muted overflow-hidden">
                   {currentFeatured.images?.[0] ? (
                     <img 
                       src={currentFeatured.images[0]} 
                       alt={currentFeatured.title} 
-                      className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-[2000ms] cubic-bezier(0.4, 0, 0.2, 1)"
+                      className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-[2000ms]"
                     />
                   ) : (
-                    <div className="w-full h-full bg-skyblue/5 flex items-center justify-center">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/20">No Preview</span>
-                    </div>
+                    <div className="w-full h-full bg-primary/5" />
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-r from-background/0 via-background/0 to-background hidden md:block" />
-                  <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent md:hidden" />
-                  
-                  <div className="absolute bottom-10 left-10 flex gap-4">
-                    <Badge className="bg-skyblue text-black font-black px-6 py-2 rounded-xl text-xs uppercase tracking-widest">{currentFeatured.platform}</Badge>
-                    <Badge className="bg-white/10 backdrop-blur-xl border-white/10 text-white font-black px-6 py-2 rounded-xl text-xs uppercase tracking-widest">Verified Logic</Badge>
+                  <div className="absolute top-6 left-6 z-30">
+                    <Badge className="bg-background/80 backdrop-blur-md border-border/50 text-foreground font-bold px-4 py-1.5 rounded-lg text-xs uppercase tracking-widest">{currentFeatured.platform}</Badge>
                   </div>
                 </div>
 
-                <div className="md:w-2/5 p-8 md:p-12 flex flex-col justify-center gap-6 relative z-10 bg-background/50 backdrop-blur-3xl md:bg-transparent">
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-3">
-                      <Star className="w-5 h-5 text-crimson fill-current" />
-                      <span className="text-sm font-black uppercase tracking-[0.2em] text-crimson">Elite Status</span>
+                <div className="md:w-2/5 p-8 md:p-12 flex flex-col justify-center gap-8 bg-card border-t md:border-t-0 md:border-l border-border/40">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 text-primary">
+                      <Star className="w-4 h-4 fill-current" />
+                      <span className="text-[10px] font-black uppercase tracking-widest">Featured Selection</span>
                     </div>
-                    <h3 className="text-4xl md:text-5xl font-black tracking-tighter leading-[0.9] group-hover/card:text-gradient-lavender transition-all duration-500">
+                    <h3 className="text-4xl md:text-5xl font-black tracking-tight leading-none text-foreground">
                       {currentFeatured.title}
                     </h3>
                     <p className="text-lg text-muted-foreground/80 leading-relaxed font-medium line-clamp-3">
@@ -162,68 +133,68 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
                     </p>
                   </div>
 
-                  <div className="flex flex-col gap-8 pt-8 border-t border-white/10">
-                    <div className="flex items-center gap-5">
-                      <div className="w-16 h-16 rounded-3xl overflow-hidden border-2 border-skyblue/30 shadow-2xl transform group-hover/card:rotate-12 transition-transform duration-500 flex items-center justify-center bg-white/5">
-                        {currentFeatured.seller ? (
-                          <img 
-                            src={getSellerAvatar(currentFeatured.seller)} 
-                            alt="Avatar" 
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-skyblue/10" />
-                        )}
-                      </div>
-                    <div className="flex flex-col">
-                      <span className="text-lg font-black tracking-tight">@{getSellerHandle(currentFeatured.seller)}</span>
-                      <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Genesis Creator</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Professional License</span>
+                  <div className="flex flex-col gap-6 pt-6 border-t border-border/40">
+                    <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <Wallet className="w-6 h-6 text-skyblue" />
-                        <span className="text-3xl font-black text-skyblue">{currentFeatured.price}</span>
+                        <div className="w-12 h-12 rounded-2xl overflow-hidden border border-border/50 bg-secondary flex items-center justify-center">
+                          {currentFeatured.seller && (
+                            <img 
+                              src={getSellerAvatar(currentFeatured.seller)} 
+                              alt="Avatar" 
+                              className="w-full h-full object-cover"
+                            />
+                          )}
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-base font-bold text-foreground">@{getSellerHandle(currentFeatured.seller)}</span>
+                          <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Elite Creator</span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Starting at</p>
+                        <span className="text-3xl font-black text-primary italic">₹{currentFeatured.price}</span>
                       </div>
                     </div>
-                    <Button className="h-14 px-8 rounded-xl bg-crimson text-white font-black uppercase tracking-widest hover:scale-105 active:scale-95 shadow-[0_15px_40px_-10px_rgba(255,100,100,0.4)] transition-all">
-                      Unlock Now
+                    <Button className="h-14 rounded-xl bg-primary text-primary-foreground font-bold uppercase tracking-widest hover:translate-y-[-2px] hover:shadow-lg transition-all">
+                      View full prompt
                     </Button>
                   </div>
                 </div>
-              </div>
-            </Card>
-          </motion.div>
-        </Link>
-      )}
-    </div>
+              </Card>
+            </motion.div>
+          </Link>
+        )}
+      </div>
 
-      <div className="relative pt-10">
+      <div className="relative pt-6">
         <div className="flex items-center justify-between mb-8">
-          <h3 className="text-2xl font-black tracking-tight uppercase tracking-widest flex items-center gap-3 text-muted-foreground">
-            <span className="w-8 h-[2px] bg-white/10" /> Global Standouts
+          <h3 className="text-xl font-black tracking-tight uppercase tracking-[0.2em] text-muted-foreground/50">
+            Recent Standouts
           </h3>
           <div className="flex gap-2">
             <Button 
               variant="outline" 
               size="icon" 
-              className={`w-12 h-12 rounded-2xl border-white/5 bg-background/50 backdrop-blur-sm transition-all ${!canScrollLeft ? 'opacity-30 cursor-not-allowed' : 'hover:bg-skyblue hover:text-black hover:border-skyblue'}`}
+              className={cn(
+                "w-10 h-10 rounded-xl border-border/40 bg-background/50 transition-all",
+                !canScrollLeft ? 'opacity-30 cursor-not-allowed' : 'hover:bg-primary hover:text-white'
+              )}
               onClick={() => scrollTrending("left")}
               disabled={!canScrollLeft}
             >
-              <ChevronLeft className="w-6 h-6" />
+              <ChevronLeft className="w-5 h-5" />
             </Button>
             <Button 
               variant="outline" 
               size="icon" 
-              className={`w-12 h-12 rounded-2xl border-white/5 bg-background/50 backdrop-blur-sm transition-all ${!canScrollRight ? 'opacity-30 cursor-not-allowed' : 'hover:bg-skyblue hover:text-black hover:border-skyblue'}`}
+              className={cn(
+                "w-10 h-10 rounded-xl border-border/40 bg-background/50 transition-all",
+                !canScrollRight ? 'opacity-30 cursor-not-allowed' : 'hover:bg-primary hover:text-white'
+              )}
               onClick={() => scrollTrending("right")}
               disabled={!canScrollRight}
             >
-              <ChevronRight className="w-6 h-6" />
+              <ChevronRight className="w-5 h-5" />
             </Button>
           </div>
         </div>
@@ -231,80 +202,50 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
         <div 
           ref={scrollRef}
           onScroll={checkScroll}
-          className="flex gap-8 overflow-x-auto scrollbar-hide pb-10 px-2 -mx-2 snap-x snap-mandatory"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          className="flex gap-6 overflow-x-auto scrollbar-hide pb-8 px-2 -mx-2 snap-x snap-mandatory"
         >
-          {otherTrending.map((prompt, index) => {
-            const sellerHandle = getSellerHandle(prompt.seller);
-            const user = users.find(u => u.username === sellerHandle);
-            return (
-              <motion.div
-                key={prompt._id || prompt.id || `trending-${index}`}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                className="min-w-[320px] snap-start"
-              >
-                <Link href={`/prompt/${prompt.id}`}>
-                  <Card className="glass-card group/card overflow-hidden rounded-[2rem] h-[380px] flex flex-col relative ring-1 ring-white/5 hover:ring-skyblue/30 transition-all duration-500">
-                    <div className="absolute top-6 left-6 z-30 flex items-center gap-3">
-                      <div className="w-12 h-12 bg-black/80 backdrop-blur-2xl rounded-xl flex items-center justify-center border border-white/10 font-black text-2xl text-white shadow-xl">
-                        {index + 6}
+          {otherTrending.map((prompt, index) => (
+            <motion.div
+              key={prompt._id || prompt.id || `trending-${index}`}
+              className="min-w-[280px] snap-start"
+            >
+              <Link href={`/prompt/${prompt.id}`}>
+                <Card className="glass-card group/card overflow-hidden rounded-2xl flex flex-col relative border-border/40 hover:shadow-xl transition-all duration-300">
+                  <div className="relative aspect-[3/4] bg-muted overflow-hidden">
+                    {prompt.images?.[0] ? (
+                      <img 
+                        src={prompt.images[0]} 
+                        alt={prompt.title} 
+                        className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-primary/5" />
+                    )}
+                    <Badge className="absolute top-4 left-4 bg-background/80 backdrop-blur-md border-border/50 text-foreground font-bold px-3 py-1 rounded text-[9px] uppercase tracking-wider">
+                      {prompt.platform}
+                    </Badge>
+                  </div>
+
+                  <div className="p-4 flex-grow flex flex-col gap-3">
+                    <h3 className="text-lg font-black tracking-tight text-foreground line-clamp-1 group-hover/card:text-primary transition-colors">{prompt.title}</h3>
+                    <div className="mt-auto flex justify-between items-center pt-3 border-t border-border/30">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-secondary overflow-hidden border border-border/50 flex items-center justify-center">
+                          <img 
+                            src={getSellerAvatar(prompt.seller)} 
+                            alt="Avatar" 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <span className="text-[11px] font-bold text-muted-foreground">@{getSellerHandle(prompt.seller)}</span>
                       </div>
+                      <span className="text-sm font-black text-primary italic">₹{prompt.price}</span>
                     </div>
-
-                    <div className="relative h-48 bg-muted overflow-hidden">
-                      {prompt.images?.[0] ? (
-                        <img 
-                          src={prompt.images[0]} 
-                          alt={prompt.title} 
-                          className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-700"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-skyblue/5 flex items-center justify-center">
-                          <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/20">No Preview</span>
-                        </div>
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
-                      <Badge className="absolute bottom-4 left-6 bg-white/10 backdrop-blur-xl border-white/10 text-white font-bold px-4 py-1.5 rounded-xl uppercase tracking-widest text-[8px]">
-                        {prompt.platform}
-                      </Badge>
-                    </div>
-
-                    <div className="p-8 flex-grow flex flex-col gap-4">
-                      <h3 className="text-2xl font-black tracking-tight line-clamp-1 group-hover/card:text-skyblue transition-colors">{prompt.title}</h3>
-                      <p className="text-sm text-muted-foreground/70 line-clamp-2 font-medium">{prompt.tagline}</p>
-
-                      <div className="mt-auto flex justify-between items-center pt-6 border-t border-white/5">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 flex items-center justify-center bg-white/5">
-                            {prompt.seller ? (
-                              <img 
-                                src={getSellerAvatar(prompt.seller)} 
-                                alt="Avatar" 
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full bg-skyblue/10" />
-                            )}
-                          </div>
-                          <span className="text-sm font-bold tracking-tight">@{getSellerHandle(prompt.seller)}</span>
-                        </div>
-                        <div className="flex flex-col items-end gap-1">
-                          <div className="flex items-center gap-2 text-skyblue font-black text-xl">
-                            <Wallet className="w-4 h-4" /> {prompt.price}
-                          </div>
-                          <div className="flex items-center gap-1 text-[10px] text-crimson font-black uppercase tracking-widest">
-                            <Star className="w-3 h-3 fill-current" /> {prompt.rating}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                </Link>
-              </motion.div>
-            );
-          })}
+                  </div>
+                </Card>
+              </Link>
+            </motion.div>
+          ))}
         </div>
       </div>
     </div>
