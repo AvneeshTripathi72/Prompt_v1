@@ -245,17 +245,23 @@ export default function PromptDetailPage({ params: paramsPromise }: { params: Pr
               <div className="flex items-center gap-5">
                 <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-skyblue/20 p-0.5 shadow-2xl relative group">
                   <div className="absolute inset-0 bg-skyblue/20 animate-pulse" />
-                  <img src={`https://avatar.iran.liara.run/public/boy?username=${prompt.seller}`} alt="Seller" className="w-full h-full object-cover rounded-[calc(1rem-2.5px)] relative z-10" />
+                  <img 
+                    src={(prompt.seller && typeof prompt.seller === 'object' && prompt.seller.avatar) 
+                      ? prompt.seller.avatar 
+                      : `https://avatar.iran.liara.run/public/boy?username=${typeof prompt.seller === 'object' ? (prompt.seller.name || prompt.seller.username || "anonymous") : (prompt.seller || "anonymous")}`} 
+                    alt="Seller" 
+                    className="w-full h-full object-cover rounded-[calc(1rem-2.5px)] relative z-10" 
+                  />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="font-black text-xl tracking-tight">@{prompt.seller}</h4>
+                  <h4 className="font-black text-xl tracking-tight">@{typeof prompt.seller === 'object' ? (prompt.seller.name || prompt.seller.username || "anonymous") : (prompt.seller || "anonymous")}</h4>
                   <div className="flex items-center gap-3">
                     <Badge className="bg-skyblue/10 text-skyblue border-skyblue/20 text-[9px] font-black tracking-widest">MASTER</Badge>
                     <span className="text-xs font-black text-muted-foreground uppercase">{prompt.rating} SCORE</span>
                   </div>
                 </div>
               </div>
-              <Link href={`/u/${prompt.seller}`} className="w-full">
+              <Link href={`/u/${typeof prompt.seller === 'object' ? (prompt.seller.username || prompt.seller.name || "anonymous") : (prompt.seller || "anonymous")}`} className="w-full">
                 <Button variant="outline" className="w-full h-12 border border-white/5 rounded-xl hover:border-skyblue/30 transition-all font-black uppercase tracking-widest text-[10px]">Engineer Profile</Button>
               </Link>
             </div>

@@ -15,6 +15,17 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [activeFeaturedIndex, setActiveFeaturedIndex] = useState(0);
 
+  const getSellerHandle = (seller: any) => {
+    if (typeof seller === 'string') return seller;
+    if (seller && typeof seller === 'object') return seller.name || seller.username || 'anonymous';
+    return 'anonymous';
+  };
+
+  const getSellerAvatar = (seller: any) => {
+    if (seller && typeof seller === 'object' && seller.avatar) return seller.avatar;
+    return `https://avatar.iran.liara.run/public/boy?username=${getSellerHandle(seller)}`;
+  };
+
   const safePrompts = Array.isArray(prompts) ? prompts : [];
   const featuredPrompts = safePrompts.slice(0, 5);
   const otherTrending = safePrompts.slice(5, 15);
@@ -156,7 +167,7 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
                       <div className="w-16 h-16 rounded-3xl overflow-hidden border-2 border-skyblue/30 shadow-2xl transform group-hover/card:rotate-12 transition-transform duration-500 flex items-center justify-center bg-white/5">
                         {currentFeatured.seller ? (
                           <img 
-                            src={`https://avatar.iran.liara.run/public/boy?username=${currentFeatured.seller}`} 
+                            src={getSellerAvatar(currentFeatured.seller)} 
                             alt="Avatar" 
                             className="w-full h-full object-cover"
                           />
@@ -165,7 +176,7 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
                         )}
                       </div>
                     <div className="flex flex-col">
-                      <span className="text-lg font-black tracking-tight">@{currentFeatured.seller}</span>
+                      <span className="text-lg font-black tracking-tight">@{getSellerHandle(currentFeatured.seller)}</span>
                       <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Genesis Creator</span>
                     </div>
                   </div>
@@ -224,7 +235,8 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {otherTrending.map((prompt, index) => {
-            const user = users.find(u => u.username === prompt.seller);
+            const sellerHandle = getSellerHandle(prompt.seller);
+            const user = users.find(u => u.username === sellerHandle);
             return (
               <motion.div
                 key={prompt._id || prompt.id || `trending-${index}`}
@@ -268,7 +280,7 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
                           <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 flex items-center justify-center bg-white/5">
                             {prompt.seller ? (
                               <img 
-                                src={`https://avatar.iran.liara.run/public/boy?username=${prompt.seller}`} 
+                                src={getSellerAvatar(prompt.seller)} 
                                 alt="Avatar" 
                                 className="w-full h-full object-cover"
                               />
@@ -276,7 +288,7 @@ export const TrendingSlider = ({ prompts, users = [] }: { prompts: any[], users?
                               <div className="w-full h-full bg-skyblue/10" />
                             )}
                           </div>
-                          <span className="text-sm font-bold tracking-tight">@{prompt.seller}</span>
+                          <span className="text-sm font-bold tracking-tight">@{getSellerHandle(prompt.seller)}</span>
                         </div>
                         <div className="flex flex-col items-end gap-1">
                           <div className="flex items-center gap-2 text-skyblue font-black text-xl">

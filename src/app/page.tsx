@@ -103,8 +103,10 @@ export default function LandingPage() {
                 rating={prompt.rating || 5}
                 platform={prompt.platform || "Unknown"}
                 author={{
-                  username: prompt.seller || "anonymous",
-                  avatar: prompt.seller ? `https://avatar.iran.liara.run/public/boy?username=${prompt.seller}` : ""
+                  username: typeof prompt.seller === 'object' ? (prompt.seller.name || prompt.seller.username || "anonymous") : (prompt.seller || "anonymous"),
+                  avatar: (prompt.seller && typeof prompt.seller === 'object' && prompt.seller.avatar) 
+                    ? prompt.seller.avatar 
+                    : `https://avatar.iran.liara.run/public/boy?username=${typeof prompt.seller === 'object' ? (prompt.seller.name || prompt.seller.username || "anonymous") : (prompt.seller || "anonymous")}`
                 }}
                 previewImage={prompt.images?.[0] || ""}
                 promptPreview={prompt.promptText?.substring(0, 80) || ""}
