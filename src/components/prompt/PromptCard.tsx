@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Wallet, Lock, Eye, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface PromptCardProps {
   id: string;
@@ -20,6 +21,7 @@ interface PromptCardProps {
   };
   previewImage: string;
   promptPreview: string;
+  aspectRatio?: string;
 }
 
 export const PromptCard = ({
@@ -34,19 +36,85 @@ export const PromptCard = ({
   promptPreview,
 }: PromptCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [imageRatio, setImageRatio] = useState<number>(3/4); // Default fallback
+
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { naturalWidth, naturalHeight } = e.currentTarget;
+    if (naturalWidth && naturalHeight) {
+      setImageRatio(naturalWidth / naturalHeight);
+    }
+  };
+
+  // 3D Tilt Effect Values
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+
+    x.set(xPct);
+    y.set(yPct);
+    
+    // Set raw mouse position for glow effect
+    mouseXRaw.set(mouseX);
+    mouseYRaw.set(mouseY);
+  };
+
+  const mouseXRaw = useMotionValue(0);
+  const mouseYRaw = useMotionValue(0);
+  const glow = useTransform(
+    [mouseXRaw, mouseYRaw],
+    ([mx, my]) => `radial-gradient(400px circle at ${mx}px ${my}px, rgba(139, 92, 246, 0.1), transparent 80%)`
+  );
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    x.set(0);
+    y.set(0);
+    mouseXRaw.set(-1000);
+    mouseYRaw.set(-1000);
+  };
 
   return (
     <motion.div
       layout
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+      }}
       whileHover={{ y: -6 }}
-      className="group relative h-full"
+      className="group relative h-full perspective-1000"
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
       <Link href={`/prompt/${id}`} className="block h-full">
-        <Card className="glass-card h-full overflow-hidden rounded-2xl flex flex-col border-border bg-card transition-all duration-300">
-          {/* Image Section - 3:4 Aspect Ratio */}
-          <div className="relative aspect-[3/4] bg-muted/30 overflow-hidden">
+        <Card className="glass-card h-full overflow-hidden rounded-2xl flex flex-col border-border bg-card transition-all duration-300 relative">
+          {/* Dynamic Glow Overlay */}
+          <motion.div 
+            className="absolute inset-0 z-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{ background: glow }}
+          />
+          
+          {/* Image Section - Respects Image's Natural Aspect Ratio */}
+          <div 
+            className="relative bg-muted/30 overflow-hidden transition-[padding-top] duration-500 ease-out"
+            style={{ paddingTop: `${(1 / imageRatio) * 100}%` }}
+          >
             <AnimatePresence mode="wait">
               {isHovered && (
                 <motion.div
@@ -68,10 +136,11 @@ export const PromptCard = ({
               <img 
                 src={previewImage} 
                 alt={title} 
-                className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" 
+                onLoad={handleImageLoad}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" 
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-muted/20">
+              <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-muted/20">
                 <Sparkles className="w-6 h-6 text-muted-foreground/10" />
               </div>
             )}

@@ -221,30 +221,31 @@ function ExploreContent() {
           )}
         </AnimatePresence>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 [column-fill:_balance]">
           {loading ? (
             Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-[400px] rounded-[2.5rem] bg-secondary animate-pulse border border-border" />
+              <div key={i} className="h-[400px] rounded-[2.5rem] bg-secondary animate-pulse border border-border mb-6 break-inside-avoid" />
             ))
           ) : (
             paginatedPrompts.map((prompt: any) => (
-              <PromptCard 
-                key={prompt._id || prompt.id}
-                id={prompt._id || prompt.id}
-                title={prompt.title || "Untitled Prompt"}
-                tagline={prompt.tagline || ""}
-                price={prompt.price || 0}
-                rating={prompt.rating || 5}
-                platform={prompt.platform || "Unknown"}
-                author={{
-                  username: typeof prompt.seller === 'object' ? (prompt.seller.name || prompt.seller.username || "anonymous") : (prompt.seller || "anonymous"),
-                  avatar: (prompt.seller && typeof prompt.seller === 'object' && prompt.seller.avatar) 
-                    ? prompt.seller.avatar 
-                    : `https://avatar.iran.liara.run/public/boy?username=${typeof prompt.seller === 'object' ? (prompt.seller.name || prompt.seller.username || "anonymous") : (prompt.seller || "anonymous")}`
-                }}
-                previewImage={prompt.images?.[0] || ""}
-                promptPreview={prompt.promptText?.substring(0, 80) || ""}
-              />
+              <div key={prompt._id || prompt.id} className="mb-6 break-inside-avoid">
+                <PromptCard 
+                  id={prompt._id || prompt.id}
+                  title={prompt.title || "Untitled Prompt"}
+                  tagline={prompt.tagline || ""}
+                  price={prompt.price || 0}
+                  rating={prompt.rating || 5}
+                  platform={prompt.platform || "Unknown"}
+                  author={{
+                    username: typeof prompt.seller === 'object' ? (prompt.seller.name || prompt.seller.username || "anonymous") : (prompt.seller || "anonymous"),
+                    avatar: (prompt.seller && typeof prompt.seller === 'object' && prompt.seller.avatar) 
+                      ? prompt.seller.avatar 
+                      : `https://avatar.iran.liara.run/public/boy?username=${typeof prompt.seller === 'object' ? (prompt.seller.name || prompt.seller.username || "anonymous") : (prompt.seller || "anonymous")}`
+                  }}
+                  previewImage={prompt.images?.[0] || ""}
+                  promptPreview={prompt.promptText?.substring(0, 80) || ""}
+                />
+              </div>
             ))
           )}
         </div>

@@ -139,6 +139,10 @@
     background-clip: text;
     color: transparent;
   }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
 }
 
 ::-webkit-scrollbar {

@@ -126,30 +126,31 @@ export default function LandingPage() {
             </Button>
           </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 [column-fill:_balance]">
           {loading ? (
              Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="aspect-[3/4] rounded-2xl bg-muted/50 animate-pulse" />
+              <div key={i} className="aspect-[3/4] rounded-2xl bg-muted/50 animate-pulse mb-6 break-inside-avoid" />
             ))
           ) : (
             prompts.slice(0, 4).map((prompt: any) => (
-              <PromptCard 
-                key={prompt._id || prompt.id}
-                id={prompt._id || prompt.id}
-                title={prompt.title || "Untitled Prompt"}
-                tagline={prompt.tagline || ""}
-                price={prompt.price || 0}
-                rating={prompt.rating || 5}
-                platform={prompt.platform || "Unknown"}
-                author={{
-                  username: typeof prompt.seller === 'object' ? (prompt.seller.name || prompt.seller.username || "anonymous") : (prompt.seller || "anonymous"),
-                  avatar: (prompt.seller && typeof prompt.seller === 'object' && prompt.seller.avatar) 
-                    ? prompt.seller.avatar 
-                    : ""
-                }}
-                previewImage={prompt.images?.[0] || ""}
-                promptPreview={prompt.promptText?.substring(0, 80) || ""}
-              />
+              <div key={prompt._id || prompt.id} className="mb-6 break-inside-avoid">
+                <PromptCard 
+                  id={prompt._id || prompt.id}
+                  title={prompt.title || "Untitled Prompt"}
+                  tagline={prompt.tagline || ""}
+                  price={prompt.price || 0}
+                  rating={prompt.rating || 5}
+                  platform={prompt.platform || "Unknown"}
+                  author={{
+                    username: typeof prompt.seller === 'object' ? (prompt.seller.name || prompt.seller.username || "anonymous") : (prompt.seller || "anonymous"),
+                    avatar: (prompt.seller && typeof prompt.seller === 'object' && prompt.seller.avatar) 
+                      ? prompt.seller.avatar 
+                      : ""
+                  }}
+                  previewImage={prompt.images?.[0] || ""}
+                  promptPreview={prompt.promptText?.substring(0, 80) || ""}
+                />
+              </div>
             ))
           )}
         </div>

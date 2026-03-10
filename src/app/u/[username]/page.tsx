@@ -137,20 +137,21 @@ export default function SellerProfilePage({ params: paramsPromise }: { params: P
             </div>
             <span className="text-xs font-black text-primary bg-primary/5 px-4 py-2 rounded-xl border border-primary/10">{sellerPrompts.length} Assets Found</span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-8 [column-fill:_balance]">
             {sellerPrompts.map((prompt) => (
-              <PromptCard 
-                key={prompt._id || prompt.id}
-                id={prompt._id || prompt.id}
-                title={prompt.title || "Untitled Prompt"}
-                tagline={prompt.tagline || ""}
-                price={prompt.price || 0}
-                rating={prompt.rating || 5}
-                platform={prompt.platform || "Unknown"}
-                author={{ username: user.username, avatar: user.avatar || "" }}
-                previewImage={prompt.images?.[0] || ""}
-                promptPreview={prompt.promptText?.substring(0, 80) || ""}
-              />
+              <div key={prompt._id || prompt.id} className="mb-8 break-inside-avoid">
+                <PromptCard 
+                  id={prompt._id || prompt.id}
+                  title={prompt.title || "Untitled Prompt"}
+                  tagline={prompt.tagline || ""}
+                  price={prompt.price || 0}
+                  rating={prompt.rating || 5}
+                  platform={prompt.platform || "Unknown"}
+                  author={{ username: user.username, avatar: user.avatar || "" }}
+                  previewImage={prompt.images?.[0] || ""}
+                  promptPreview={prompt.promptText?.substring(0, 80) || ""}
+                />
+              </div>
             ))}
           </div>
           {sellerPrompts.length === 0 && (

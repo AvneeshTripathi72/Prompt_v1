@@ -4,6 +4,7 @@ import "./globals.css";
 import { MainLayout } from "@/components/MainLayout";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} min-h-screen bg-background text-foreground transition-colors duration-300`}>
+      <body className={`${inter.className} min-h-screen bg-background text-foreground transition-colors duration-300`} suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -31,8 +32,8 @@ export default function RootLayout({
             {children}
           </MainLayout>
           <Toaster position="top-center" richColors />
-          <script src="https://checkout.razorpay.com/v1/checkout.js" async />
         </ThemeProvider>
+        <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       </body>
     </html>
   );
