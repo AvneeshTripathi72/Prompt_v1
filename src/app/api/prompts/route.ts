@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Invalidate the 'prompts' cache tag
-    revalidateTag('prompts');
+    revalidateTag('prompts', 'default');
 
     return NextResponse.json(prompt, { status: 201 });
   } catch (error: any) {
