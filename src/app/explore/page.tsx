@@ -97,41 +97,41 @@ function ExploreContent() {
   };
 
   return (
-    <div className="container mx-auto px-6 pt-10 pb-16 max-w-7xl">
-      <div className="space-y-12">
-        <div className="glass-card p-10 rounded-[3rem] border-white/5 shadow-3xl space-y-10">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">
-            <div className="space-y-4">
-              <h1 className="text-5xl md:text-6xl font-black tracking-tighter leading-none">
-                Explore <span className="text-gradient">Logic</span>
+    <div className="container mx-auto px-6 py-10 max-w-[1500px]">
+      <div className="space-y-8">
+        <div className="glass-card p-6 rounded-2xl border-border/50 shadow-sm space-y-8">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+            <div className="space-y-2">
+              <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-none">
+                Explore <span className="text-primary">Logic</span>
               </h1>
               <div className="flex items-center gap-4">
                 <Button 
                   onClick={() => setShowFilters(!showFilters)}
                   className={cn(
-                    "h-12 rounded-2xl px-8 gap-3 font-black uppercase tracking-widest text-[10px] transition-all duration-500 shadow-2xl",
+                    "h-10 rounded-xl px-6 gap-2 font-bold uppercase tracking-widest text-[10px] transition-all duration-300",
                     showFilters 
-                      ? "bg-crimson text-white shadow-crimson/20" 
-                      : "bg-white text-black hover:bg-white/90 shadow-white/10"
+                      ? "bg-destructive text-destructive-foreground shadow-sm" 
+                      : "bg-primary text-primary-foreground hover:opacity-90 shadow-sm"
                   )}
                 >
-                  <SlidersHorizontal className={cn("w-4 h-4", showFilters ? "animate-spin-slow" : "")} /> 
+                  <SlidersHorizontal className={cn("w-3.5 h-3.5", showFilters ? "animate-spin-slow" : "")} /> 
                   {showFilters ? "Close Filters" : "Filter Logic"}
                 </Button>
-                <div className="h-4 w-px bg-white/10 hidden md:block" />
-                <p className="text-muted-foreground font-bold text-xs uppercase tracking-widest opacity-60 hidden md:block">
+                <div className="h-4 w-px bg-border hidden md:block" />
+                <p className="text-muted-foreground font-black text-[10px] uppercase tracking-widest opacity-60 hidden md:block">
                   {totalItems} Available
                 </p>
               </div>
             </div>
             
             <Tabs value={activeCategory} className="w-full lg:w-fit">
-              <TabsList className="bg-white/5 border border-white/10 p-1.5 h-16 rounded-[2rem] flex overflow-x-auto scrollbar-hide backdrop-blur-3xl shadow-2xl">
+              <TabsList className="bg-muted border border-border p-1 h-12 rounded-xl flex overflow-x-auto scrollbar-hide">
                 {CATEGORIES.map((cat) => (
                   <TabsTrigger 
                     key={cat} 
                     value={cat}
-                    className="rounded-3xl data-[state=active]:bg-skyblue data-[state=active]:text-white px-8 font-black text-[10px] uppercase tracking-widest transition-all duration-500"
+                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-6 font-bold text-[10px] uppercase tracking-widest transition-all"
                     onClick={() => setActiveCategory(cat)}
                   >
                     {cat}
@@ -270,7 +270,7 @@ function ExploreContent() {
           </AnimatePresence>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {loading ? (
             Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="h-[400px] rounded-[2.5rem] bg-white/5 animate-pulse border border-white/5" />

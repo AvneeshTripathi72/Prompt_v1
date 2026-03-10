@@ -2,13 +2,20 @@
 
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { Search, Wallet, Bell, Menu, X } from "lucide-react";
+import { Search, Wallet, Bell, Menu, X, Moon, Sun } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState, useEffect } from "react";
 import { Input } from "./ui/input";
+import { useTheme } from "next-themes";
 
 export const Navbar = () => {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -88,6 +95,16 @@ export const Navbar = () => {
             </Link>
             
             <div className="flex items-center gap-3">
+              {mounted && (
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="text-muted-foreground hover:text-primary transition-colors h-10 w-10 rounded-xl bg-white/5 border border-white/5"
+                >
+                  {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                </Button>
+              )}
               <Button variant="ghost" size="icon" className="hidden sm:flex text-muted-foreground hover:text-skyblue">
                 <Bell className="w-5 h-5" />
               </Button>

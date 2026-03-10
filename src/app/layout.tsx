@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { MainLayout } from "@/components/MainLayout";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,13 +19,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.className} min-h-screen bg-background`}>
-        <MainLayout>
-          {children}
-        </MainLayout>
-        <Toaster position="top-center" richColors />
-        <script src="https://checkout.razorpay.com/v1/checkout.js" async />
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} min-h-screen bg-background text-foreground transition-colors duration-300`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <MainLayout>
+            {children}
+          </MainLayout>
+          <Toaster position="top-center" richColors />
+          <script src="https://checkout.razorpay.com/v1/checkout.js" async />
+        </ThemeProvider>
       </body>
     </html>
   );

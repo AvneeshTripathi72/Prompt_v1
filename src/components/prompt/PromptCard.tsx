@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, Wallet, Lock, Eye } from "lucide-react";
+import { Star, Wallet, Lock, Eye, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 interface PromptCardProps {
@@ -44,24 +44,21 @@ export const PromptCard = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <Link href={`/prompt/${id}`}>
-        <Card className="glass-card group/card overflow-hidden rounded-2xl h-[360px] flex flex-col relative premium-shadow border-white/5 hover:border-skyblue/20">
-          <div className="relative aspect-[4/3] bg-muted overflow-hidden">
+        <Card className="glass-card group/card overflow-hidden rounded-2xl flex flex-col relative border-border hover:border-primary/50 bg-card shadow-sm transition-all duration-300 hover:shadow-[0_0_20px_rgba(139,92,246,0.15)]">
+          <div className="relative aspect-[4/5] bg-muted overflow-hidden">
             <AnimatePresence mode="wait">
               {isHovered ? (
                 <motion.div
                   key="preview"
-                  initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 1.05 }}
-                  className="absolute inset-0 z-20 bg-background/95 backdrop-blur-xl p-8 flex flex-col justify-center items-center text-center gap-5"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 z-20 bg-background/80 backdrop-blur-md p-4 flex flex-col justify-center items-center text-center gap-2"
                 >
-                  <div className="w-12 h-12 bg-skyblue/10 rounded-2xl flex items-center justify-center border border-skyblue/20">
-                    <Lock className="w-6 h-6 text-skyblue" />
-                  </div>
-                  <p className="text-sm font-medium text-muted-foreground/90 leading-relaxed italic line-clamp-4 px-2">
-                    "{promptPreview}..."
+                  <Lock className="w-5 h-5 text-primary" />
+                  <p className="text-[10px] font-medium text-foreground/70 leading-tight italic line-clamp-3">
+                    {promptPreview}
                   </p>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-skyblue bg-skyblue/5 px-3 py-1 rounded-full border border-skyblue/10">Access restricted</div>
                 </motion.div>
               ) : null}
             </AnimatePresence>
@@ -70,50 +67,41 @@ export const PromptCard = ({
               <img 
                 src={previewImage} 
                 alt={title} 
-                className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110" 
+                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
               />
             ) : (
-              <div className="w-full h-full bg-muted flex items-center justify-center">
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">No Preview</p>
+              <div className="w-full h-full bg-muted/30 flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-muted-foreground/20" />
               </div>
             )}
             
-            <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/20 to-transparent z-10" />
-            
-            <div className="absolute top-4 left-4 z-30 flex gap-2">
-              <Badge className="bg-black/60 backdrop-blur-xl border-white/10 text-[10px] font-bold px-3 py-1 rounded-lg text-skyblue uppercase tracking-wider">{platform}</Badge>
-            </div>
-            
-            <div className="absolute bottom-4 left-4 z-30 flex items-center gap-2 text-crimson">
-              <Star className="w-4 h-4 fill-current drop-shadow-[0_0_8px_rgba(255,100,100,0.5)]" />
-              <span className="text-sm font-black tracking-tight">{rating}</span>
+            <div className="absolute top-2 left-2 z-30">
+              <Badge className="bg-black/40 backdrop-blur-md border border-white/10 text-[8px] font-bold px-1.5 py-0.5 rounded text-white uppercase tracking-wider">{platform}</Badge>
             </div>
           </div>
 
-          <div className="p-5 flex-grow flex flex-col gap-3">
-            <div className="space-y-1">
-              <h3 className="font-black text-lg tracking-tight line-clamp-1 group-hover:text-skyblue transition-colors duration-300">{title}</h3>
-              <p className="text-[12px] text-muted-foreground/80 line-clamp-2 leading-tight font-medium">
+          <div className="p-3 flex flex-col gap-2 bg-card">
+            <div className="space-y-0.5">
+              <div className="flex justify-between items-start gap-2">
+                <h3 className="font-bold text-[13px] leading-tight tracking-tight line-clamp-1 group-hover:text-primary transition-colors">{title}</h3>
+                <div className="flex items-center gap-0.5 text-yellow-500 shrink-0">
+                  <Star className="w-2.5 h-2.5 fill-current" />
+                  <span className="text-[10px] font-bold">{rating}</span>
+                </div>
+              </div>
+              <p className="text-[11px] text-muted-foreground line-clamp-1 font-medium italic">
                 {tagline}
               </p>
             </div>
 
-            <div className="mt-auto pt-5 flex justify-between items-center border-t border-white/5">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-skyblue/10 overflow-hidden border border-white/10 p-0.5 group-hover:rotate-6 transition-transform flex items-center justify-center">
-                  {author.avatar ? (
-                    <img src={author.avatar} alt={author.username} className="w-full h-full object-cover rounded-[calc(0.75rem-1px)]" />
-                  ) : (
-                    <div className="w-full h-full bg-skyblue/20 rounded-[calc(0.75rem-1px)]" />
-                  )}
+            <div className="flex justify-between items-center pt-2 border-t border-border/50">
+              <div className="flex items-center gap-1.5">
+                <div className="w-5 h-5 rounded-full bg-muted overflow-hidden border border-border">
+                  {author.avatar && <img src={author.avatar} alt={author.username} className="w-full h-full object-cover" />}
                 </div>
-                <span className="text-xs font-bold text-muted-foreground transition-colors group-hover:text-foreground">@{author.username}</span>
+                <span className="text-[10px] font-bold text-muted-foreground">@{author.username}</span>
               </div>
-              
-              <div className="flex items-center gap-2 bg-crimson/10 px-3 py-1.5 rounded-xl border border-crimson/20 shadow-[0_4px_12px_rgba(255,100,100,0.1)] group-hover:scale-105 transition-transform duration-300">
-                <Wallet className="w-3 h-3 text-crimson" />
-                <span className="text-sm font-black text-crimson">{price}</span>
-              </div>
+              <span className="text-[13px] font-black text-primary">₹{price}</span>
             </div>
           </div>
         </Card>
