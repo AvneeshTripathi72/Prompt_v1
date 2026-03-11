@@ -33,7 +33,7 @@ function ExploreContent() {
   const [sortBy, setSortBy] = useState("Newest First");
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
-  const ITEMS_PER_PAGE = 9;
+  const ITEMS_PER_PAGE = 50;
 
   const [prompts, setPrompts] = useState<any[]>([]);
   const [totalItems, setTotalItems] = useState(0);
@@ -221,14 +221,14 @@ function ExploreContent() {
           )}
         </AnimatePresence>
 
-        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 [column-fill:_balance]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           {loading ? (
-            Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-[400px] rounded-[2.5rem] bg-secondary animate-pulse border border-border mb-6 break-inside-avoid" />
+            Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className="h-[400px] rounded-[2.5rem] bg-secondary animate-pulse border border-border" />
             ))
           ) : (
             paginatedPrompts.map((prompt: any) => (
-              <div key={prompt._id || prompt.id} className="mb-6 break-inside-avoid">
+              <div key={prompt._id || prompt.id} className="h-full">
                 <PromptCard 
                   id={prompt._id || prompt.id}
                   title={prompt.title || "Untitled Prompt"}
@@ -259,46 +259,9 @@ function ExploreContent() {
             </div>
           </div>
         )}
-        
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-4 pt-12">
-            <Button 
-              variant="outline" 
-              className="rounded-xl border-border bg-card h-12 w-12 p-0 shadow-sm transition-all hover:bg-secondary"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            >
-              <ChevronLeft className="w-5 h-5 text-primary" />
-            </Button>
-            
-            <div className="flex items-center gap-2">
-              {Array.from({ length: totalPages }).map((_, i) => (
-                <Button
-                  key={i + 1}
-                  variant="outline"
-                  className={cn(
-                    "w-12 h-12 rounded-xl border-border font-black transition-all",
-                    currentPage === i + 1 ? "bg-primary border-primary text-white shadow-lg shadow-primary/20" : "bg-card hover:bg-secondary"
-                  )}
-                  onClick={() => setCurrentPage(i + 1)}
-                >
-                  {i + 1}
-                </Button>
-              ))}
-            </div>
-
-            <Button 
-              variant="outline" 
-              className="rounded-xl border-border bg-card h-12 w-12 p-0 shadow-sm transition-all hover:bg-secondary"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-            >
-              <ChevronRight className="w-5 h-5 text-primary" />
-            </Button>
-          </div>
-        )}
       </div>
     </div>
+
   );
 }
 
