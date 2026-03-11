@@ -39,9 +39,9 @@ export const TrendingSlider = ({ prompts }: { prompts: any[] }) => {
           </div>
         </div>
 
-        {/* Content Area - Single line 5 cards */}
+        {/* Content Area - Dynamic auto-fill to target 5 cards */}
         <div className="p-6 md:p-10 bg-grid-white/[0.02]">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-6">
             {displayPrompts.map((prompt, index) => (
               <motion.div
                 key={prompt._id || prompt.id || `trending-${index}`}
@@ -58,7 +58,7 @@ export const TrendingSlider = ({ prompts }: { prompts: any[] }) => {
                   rating={prompt.rating || 5}
                   platform={prompt.platform || "Unknown"}
                   author={{
-                    username: typeof prompt.seller === 'object' ? (prompt.seller.name || prompt.seller.username || "anon") : (prompt.seller || "anon"),
+                    username: typeof prompt.seller === 'object' ? (prompt.seller.name || prompt.seller.username || "anon") : (prompt.seller || "anonymous"),
                     avatar: (prompt.seller && typeof prompt.seller === 'object' && prompt.seller.avatar) || ""
                   }}
                   previewImage={prompt.images?.[0] || ""}
@@ -68,6 +68,7 @@ export const TrendingSlider = ({ prompts }: { prompts: any[] }) => {
             ))}
           </div>
         </div>
+
       </div>
 
       {/* Background Decorative Element */}
