@@ -122,8 +122,8 @@ export const PromptCard = ({
             style={{ background: glow }}
           />
           
-          {/* Image Section - Static 4:5 Aspect Ratio */}
-          <div className="relative aspect-[4/5] overflow-hidden z-20">
+          {/* Image Section - Static 1:1 Aspect Ratio with Color-Matched Blur BG */}
+          <div className="relative aspect-square overflow-hidden z-20">
             <AnimatePresence mode="wait">
               {isHovered && (
                 <motion.div

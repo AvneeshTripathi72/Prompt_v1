@@ -221,14 +221,20 @@ function ExploreContent() {
           )}
         </AnimatePresence>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {loading ? (
             Array.from({ length: 10 }).map((_, i) => (
               <div key={i} className="h-[400px] rounded-[2.5rem] bg-secondary animate-pulse border border-border" />
             ))
           ) : (
-            paginatedPrompts.map((prompt: any) => (
-              <div key={prompt._id || prompt.id} className="h-full">
+            paginatedPrompts.map((prompt: any, index: number) => (
+              <motion.div 
+                key={prompt._id || prompt.id} 
+                className="h-full"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: (index % 12) * 0.05 }}
+              >
                 <PromptCard 
                   id={prompt._id || prompt.id}
                   title={prompt.title || "Untitled Prompt"}
@@ -245,7 +251,7 @@ function ExploreContent() {
                   previewImage={prompt.images?.[0] || ""}
                   promptPreview={prompt.promptText?.substring(0, 80) || ""}
                 />
-              </div>
+              </motion.div>
             ))
           )}
         </div>
