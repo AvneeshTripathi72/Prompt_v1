@@ -221,14 +221,14 @@ function ExploreContent() {
           )}
         </AnimatePresence>
 
-        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-5 gap-6 [column-fill:_balance]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
           {loading ? (
-            Array.from({ length: 15 }).map((_, i) => (
-              <div key={i} className="h-[400px] rounded-[2.5rem] bg-secondary animate-pulse border border-border mb-6 break-inside-avoid" />
+            Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className="h-[400px] rounded-[2.5rem] bg-secondary animate-pulse border border-border" />
             ))
           ) : (
             paginatedPrompts.map((prompt: any) => (
-              <div key={prompt._id || prompt.id} className="mb-6 break-inside-avoid">
+              <div key={prompt._id || prompt.id} className="h-full">
                 <PromptCard 
                   id={prompt._id || prompt.id}
                   title={prompt.title || "Untitled Prompt"}
@@ -249,6 +249,7 @@ function ExploreContent() {
             ))
           )}
         </div>
+
 
         
         {totalItems === 0 && (

@@ -110,11 +110,19 @@ export const PromptCard = ({
             style={{ background: glow }}
           />
           
-          {/* Image Section - Respects Image's Natural Aspect Ratio */}
-          <div 
-            className="relative bg-muted/30 overflow-hidden transition-[padding-top] duration-500 ease-out"
-            style={{ paddingTop: `${(1 / imageRatio) * 100}%` }}
-          >
+          {/* Image Section - Static 4:5 Aspect Ratio with Color-Matched Blur BG */}
+          <div className="relative aspect-[4/5] bg-muted/30 overflow-hidden">
+            {/* Blurred Background to match image colors (fills space if ratio differs) */}
+            {previewImage && (
+              <div className="absolute inset-0 z-0">
+                <img 
+                  src={previewImage} 
+                  alt="" 
+                  className="w-full h-full object-cover blur-2xl scale-125 opacity-40 brightness-75 transition-transform duration-700"
+                />
+              </div>
+            )}
+
             <AnimatePresence mode="wait">
               {isHovered && (
                 <motion.div
@@ -122,12 +130,19 @@ export const PromptCard = ({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="absolute inset-0 z-20 bg-background/60 backdrop-blur-[6px] p-5 flex flex-col justify-center items-center text-center gap-3"
+                  className="absolute inset-0 z-20 flex flex-col justify-center items-center text-center p-6"
                 >
-                  <Lock className="w-5 h-5 text-primary/80" />
-                  <p className="text-[11px] font-medium text-foreground/80 leading-snug italic line-clamp-4">
-                    {promptPreview}
-                  </p>
+                  {/* Hover Overlay Blur */}
+                  <div className="absolute inset-0 z-0 backdrop-blur-[4px] bg-background/20" />
+
+                  <div className="relative z-10 flex flex-col items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl">
+                      <Lock className="w-5 h-5 text-white shadow-sm" />
+                    </div>
+                    <p className="text-[12px] font-bold text-white leading-tight drop-shadow-md italic line-clamp-4 max-w-[180px]">
+                      "{promptPreview}"
+                    </p>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -136,11 +151,10 @@ export const PromptCard = ({
               <img 
                 src={previewImage} 
                 alt={title} 
-                onLoad={handleImageLoad}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" 
+                className="absolute inset-0 w-full h-full object-contain z-10 p-2 transition-transform duration-500 ease-out group-hover:scale-105" 
               />
             ) : (
-              <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-muted/20">
+              <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-muted/20 z-10">
                 <Sparkles className="w-6 h-6 text-muted-foreground/10" />
               </div>
             )}
@@ -149,6 +163,7 @@ export const PromptCard = ({
               <Badge className="bg-background/80 backdrop-blur-md border-border/50 text-[9px] font-bold px-2 py-0.5 rounded-md text-foreground uppercase tracking-wider">{platform}</Badge>
             </div>
           </div>
+
 
           {/* Content Section */}
           <div className="p-4 flex flex-col gap-3 flex-grow bg-card">
