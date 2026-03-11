@@ -103,26 +103,27 @@ export const PromptCard = ({
       onMouseLeave={handleMouseLeave}
     >
       <Link href={`/prompt/${id}`} className="block h-full">
-        <Card className="glass-card h-full overflow-hidden rounded-2xl flex flex-col border-border bg-card transition-all duration-300 relative">
+        <Card className="glass-card h-full overflow-hidden rounded-2xl flex flex-col border-border/40 bg-card/60 backdrop-blur-xl transition-all duration-300 relative">
+          {/* Global Card Blurred Background (Integrated color matching) */}
+          {previewImage && (
+            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+              <img 
+                src={previewImage} 
+                alt="" 
+                className="w-full h-full object-cover blur-[80px] scale-150 opacity-20 contrast-150 brightness-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background/80" />
+            </div>
+          )}
+
           {/* Dynamic Glow Overlay */}
           <motion.div 
-            className="absolute inset-0 z-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            className="absolute inset-0 z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             style={{ background: glow }}
           />
           
-          {/* Image Section - Static 4:5 Aspect Ratio with Color-Matched Blur BG */}
-          <div className="relative aspect-[4/5] bg-muted/30 overflow-hidden">
-            {/* Blurred Background to match image colors (fills space if ratio differs) */}
-            {previewImage && (
-              <div className="absolute inset-0 z-0">
-                <img 
-                  src={previewImage} 
-                  alt="" 
-                  className="w-full h-full object-cover blur-2xl scale-125 opacity-40 brightness-75 transition-transform duration-700"
-                />
-              </div>
-            )}
-
+          {/* Image Section - Static 4:5 Aspect Ratio */}
+          <div className="relative aspect-[4/5] overflow-hidden z-20">
             <AnimatePresence mode="wait">
               {isHovered && (
                 <motion.div
@@ -130,10 +131,9 @@ export const PromptCard = ({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="absolute inset-0 z-20 flex flex-col justify-center items-center text-center p-6"
+                  className="absolute inset-0 z-30 flex flex-col justify-center items-center text-center p-6"
                 >
-                  {/* Hover Overlay Blur */}
-                  <div className="absolute inset-0 z-0 backdrop-blur-[4px] bg-background/20" />
+                  <div className="absolute inset-0 z-0 backdrop-blur-[6px] bg-background/30" />
 
                   <div className="relative z-10 flex flex-col items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl">
@@ -154,7 +154,7 @@ export const PromptCard = ({
                 className="absolute inset-0 w-full h-full object-contain z-10 p-2 transition-transform duration-500 ease-out group-hover:scale-105" 
               />
             ) : (
-              <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-muted/20 z-10">
+              <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-muted/10 z-10">
                 <Sparkles className="w-6 h-6 text-muted-foreground/10" />
               </div>
             )}
@@ -164,9 +164,8 @@ export const PromptCard = ({
             </div>
           </div>
 
-
-          {/* Content Section */}
-          <div className="p-4 flex flex-col gap-3 flex-grow bg-card">
+          {/* Content Section - Transparent to show matching blur */}
+          <div className="p-4 flex flex-col gap-3 flex-grow relative z-20">
             <div className="space-y-1">
               <div className="flex justify-between items-start gap-2">
                 <h3 className="font-bold text-[15px] leading-tight tracking-tight text-foreground line-clamp-1 group-hover:text-primary transition-colors">{title}</h3>
@@ -175,14 +174,14 @@ export const PromptCard = ({
                   <span className="text-[11px] font-bold">{rating}</span>
                 </div>
               </div>
-              <p className="text-[12px] text-muted-foreground line-clamp-1 font-medium">
+              <p className="text-[12px] text-muted-foreground line-clamp-1 font-medium opacity-80">
                 {tagline}
               </p>
             </div>
 
-            <div className="mt-auto flex justify-between items-center pt-3 border-t border-border/30">
+            <div className="mt-auto flex justify-between items-center pt-3 border-t border-border/20">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-secondary overflow-hidden border border-border/50 flex items-center justify-center">
+                <div className="w-6 h-6 rounded-full bg-secondary/50 overflow-hidden border border-border/50 flex items-center justify-center">
                   {author.avatar ? (
                     <img src={author.avatar} alt={author.username} className="w-full h-full object-cover" />
                   ) : (
@@ -191,10 +190,11 @@ export const PromptCard = ({
                 </div>
                 <span className="text-[11px] font-semibold text-muted-foreground hover:text-foreground transition-colors">@{author.username}</span>
               </div>
-              <span className="text-[15px] font-black text-primary">₹{price}</span>
+              <span className="text-[15px] font-black text-primary italic">₹{price}</span>
             </div>
           </div>
         </Card>
+
       </Link>
     </motion.div>
   );

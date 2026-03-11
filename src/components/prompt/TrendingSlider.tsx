@@ -72,8 +72,8 @@ export const TrendingSlider = ({ prompts }: { prompts: any[] }) => {
       </div>
 
       {/* Background Decorative Element */}
-      <div className="absolute -z-10 -bottom-12 -right-12 w-64 h-64 bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
-      <div className="absolute -z-10 -top-12 -left-12 w-64 h-64 bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute -z-10 -bottom-24 -right-24 w-96 h-96 bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute -z-10 -top-24 -left-24 w-96 h-96 bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
     </div>
   );
 };
