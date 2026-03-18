@@ -80,8 +80,6 @@
     --border-color: rgba(255, 255, 255, 0.08);
     --accent-primary: #8B5CF6;
     --accent-hover: #7C3AED;
-
-    /* Base Mappings - These will inherit from tokens */
   }
 }
 

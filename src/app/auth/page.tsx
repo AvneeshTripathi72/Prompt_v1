@@ -103,7 +103,7 @@ export default function AuthPage() {
                   </label>
                   <Input 
                     type="text" 
-                    placeholder="Global_Engineer" 
+                    placeholder="cyber_architect" 
                     className="h-12 bg-secondary border-border/40 rounded-xl px-4 font-bold focus:ring-2 focus:ring-primary/20"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}

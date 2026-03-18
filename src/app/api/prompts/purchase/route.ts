@@ -12,8 +12,11 @@ export async function POST(req: NextRequest) {
     const prompt = await Prompt.findById(promptId);
     if (!prompt) return NextResponse.json({ error: 'Prompt not found' }, { status: 404 });
 
-    // 2. Get the current user (Mocking Global_Engineer)
-    const user = await User.findOne({ username: 'Global_Engineer' });
+    // 2. Get the current user from cookie
+    const authToken = req.cookies.get('auth_token')?.value;
+    if (!authToken) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const user = await User.findOne({ username: authToken });
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
     // 3. Check if user has enough coins

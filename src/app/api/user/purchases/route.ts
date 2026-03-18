@@ -11,8 +11,11 @@ export async function GET(req: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '9');
     const skip = (page - 1) * limit;
 
-    // Hardcoded user for now
-    const user = await User.findOne({ username: 'Global_Engineer' }).lean();
+    // Get user from cookie
+    const authToken = req.cookies.get('auth_token')?.value;
+    if (!authToken) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const user = await User.findOne({ username: authToken }).lean();
     if (!user) {
       return NextResponse.json({ prompts: [], total: 0 });
     }

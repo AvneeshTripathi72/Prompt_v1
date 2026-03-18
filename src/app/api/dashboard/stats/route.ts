@@ -6,12 +6,12 @@ export async function GET(req: NextRequest) {
   try {
     await connectDB();
     
-    // In a real app, filter by the logged-in user
-    // const sellerId = "avneesh"; 
-    // const prompts = await Prompt.find({ seller: sellerId });
-    
-    // For now, let's show prompts belonging to Global_Engineer
-    const prompts = await Prompt.find({ seller: 'Global_Engineer' });
+    const authToken = req.cookies.get('auth_token')?.value;
+    if (!authToken) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const prompts = await Prompt.find({ seller: authToken });
     
     const totalSales = prompts.reduce((acc, p) => acc + (p.sales || 0), 0);
     const totalRevenue = prompts.reduce((acc, p) => acc + ((p.sales || 0) * (p.price || 0)), 0);

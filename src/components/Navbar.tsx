@@ -101,34 +101,44 @@ export const Navbar = () => {
     <>
       <nav
         className={cn(
-          "sticky top-0 z-40 transition-all duration-300",
-          scrolled ? "bg-white/80 dark:bg-[#0B0B0F]/80 backdrop-blur-md border-b border-border" : "bg-transparent"
+          "absolute top-0 right-0 w-full z-40 transition-all duration-500",
+          scrolled ? "bg-black/60 backdrop-blur-xl border-b border-white/5 py-2" : "bg-transparent py-4"
         )}
       >
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between gap-8">
-          <div className="flex items-center gap-6">
-            <Link href="/" className="text-xl font-black tracking-tighter flex items-center gap-2">
-              <span className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/20">P</span>
-              <span className="hidden sm:inline-block">Vault<span className="text-primary italic">.</span></span>
+        <div className="container mx-auto px-6 h-16 flex items-center justify-between gap-12">
+          {/* Hidden on Large screens because Sidebar has it, but good to keep for mobile or top-only layout */}
+          <div className="flex items-center gap-6 lg:hidden">
+            <Link href="/" className="text-2xl font-black tracking-tighter flex items-center gap-2">
+              <span className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-xl shadow-primary/20 font-black">V</span>
             </Link>
           </div>
 
-          <div className="flex-1 max-w-md hidden md:flex relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
-            <Input 
-              placeholder="Search assets..." 
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={handleSearch}
-              suppressHydrationWarning
-              className="pl-10 h-10 bg-white dark:bg-[#181824] border-border rounded-xl focus:ring-primary/20 focus:border-primary transition-all text-sm font-medium text-[#111827] dark:text-white"
-            />
+          {/* Premium Search Bar */}
+          <div className="flex-1 max-w-2xl hidden md:flex relative group">
+            <div className="absolute inset-0 bg-primary/20 blur-[20px] opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" />
+            <div className="relative w-full flex items-center">
+                <Search className="absolute left-4 w-4 h-4 text-white/20 transition-colors group-focus-within:text-primary z-10" />
+                <Input 
+                  placeholder="Vault_Network_Query..." 
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={handleSearch}
+                  suppressHydrationWarning
+                  className="pl-12 h-12 bg-white/[0.03] border-white/5 rounded-2xl focus:ring-primary/20 focus:border-primary transition-all text-[11px] font-black tracking-widest text-white placeholder:text-white/10 uppercase ring-offset-0"
+                />
+                <div className="absolute right-3 flex items-center gap-2">
+                    <div className="px-2 py-1 rounded bg-white/5 border border-white/10 text-[8px] font-bold text-white/30 tracking-tighter">CMD + K</div>
+                </div>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Link href="/wallet" className="hidden sm:flex items-center gap-2 hover:bg-muted p-1.5 px-3 rounded-lg border border-border/40 transition-all">
-              <Wallet className="w-4 h-4 text-primary" />
-              <span className="text-sm font-bold">{balance}</span>
+          <div className="flex items-center gap-4">
+            <Link href="/wallet" className="hidden sm:flex items-center gap-4 bg-white/[0.02] hover:bg-white/[0.05] p-2 px-4 rounded-2xl border border-white/5 transition-all group">
+              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <div className="flex flex-col items-end">
+                <span className="text-[8px] font-black text-white/20 uppercase tracking-widest leading-none mb-1">Balance_Sync</span>
+                <span className="text-xs font-black text-white tracking-widest">₹{balance}</span>
+              </div>
             </Link>
 
             
@@ -228,8 +238,8 @@ export const Navbar = () => {
           <nav className="absolute top-0 left-0 bottom-0 w-80 bg-background border-r border-border/40 p-8 flex flex-col gap-8 shadow-2xl animate-in slide-in-from-left duration-300">
             <div className="flex justify-between items-center">
               <Link href="/" className="text-2xl font-black tracking-tighter flex items-center gap-2">
-                <span className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">P</span>
-                <span className="text-foreground">Vault<span className="text-primary italic">.</span></span>
+                <span className="w-10 h-10 bg-black dark:bg-white rounded-xl flex items-center justify-center text-primary shadow-lg shadow-primary/20">N</span>
+                <span className="text-foreground">NORAG<span className="text-primary italic">.</span></span>
               </Link>
               <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(false)}>
                 <X className="w-6 h-6 text-foreground" />

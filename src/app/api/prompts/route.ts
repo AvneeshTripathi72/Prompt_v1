@@ -26,11 +26,14 @@ const getCachedCount = (query: any) =>
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
-    const body = await req.json();
-    
+    const authToken = req.cookies.get('auth_token')?.value;
+    if (!authToken) {
+      return NextResponse.json({ error: "Unauthorized. Please sign in to list prompts." }, { status: 401 });
+    }
+
     const prompt = await Prompt.create({
       ...body,
-      seller: body.seller || 'anonymous',
+      seller: authToken,
     });
 
     revalidateTag('prompts', 'page');

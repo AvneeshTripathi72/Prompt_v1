@@ -17,7 +17,11 @@ export const ScreenshotSecurity = ({ children }: { children: React.ReactNode }) 
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'PrintScreen' || e.keyCode === 44) {
-        navigator.clipboard.writeText("");
+        try {
+          navigator.clipboard.writeText("");
+        } catch (err) {
+          console.warn("Clipboard access denied");
+        }
         setIsRestricted(true);
         toast.error("Security Breach: Screenshots are prohibited.");
       }
@@ -37,7 +41,11 @@ export const ScreenshotSecurity = ({ children }: { children: React.ReactNode }) 
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
         setIsRestricted(true);
-        navigator.clipboard.writeText("");
+        try {
+          navigator.clipboard.writeText("");
+        } catch (err) {
+          // Ignore clipboard errors when window is hidden
+        }
       } else {
         setTimeout(() => setIsRestricted(false), 300);
       }
@@ -47,7 +55,11 @@ export const ScreenshotSecurity = ({ children }: { children: React.ReactNode }) 
     const handleMouseEnter = () => setIsRestricted(false);
     const handleWindowBlur = () => {
       setIsRestricted(true);
-      navigator.clipboard.writeText("");
+      try {
+        navigator.clipboard.writeText("");
+      } catch (err) {
+        // Ignore clipboard errors on blur
+      }
     };
     const handleWindowFocus = () => setIsRestricted(false);
 

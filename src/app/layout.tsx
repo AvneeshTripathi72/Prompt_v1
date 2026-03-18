@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: "Buy and sell high-quality AI prompts for ChatGPT, Midjourney, Claude, and more.",
 };
 
-import { ScreenshotSecurity } from "@/components/ScreenshotSecurity";
+
 
 export default function RootLayout({
   children,
@@ -30,11 +30,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ScreenshotSecurity>
-            <MainLayout>
-              {children}
-            </MainLayout>
-          </ScreenshotSecurity>
+          <MainLayout>
+            {children}
+          </MainLayout>
           <Toaster position="top-center" richColors />
         </ThemeProvider>
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />

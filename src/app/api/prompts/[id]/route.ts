@@ -42,8 +42,8 @@ export async function DELETE(
     const prompt = await Prompt.findById(id);
     if (!prompt) return NextResponse.json({ error: 'Prompt not found' }, { status: 404 });
 
-    // For now, allow Global_Engineer
-    if (prompt.seller !== 'Global_Engineer') {
+    const authToken = req.cookies.get('auth_token')?.value;
+    if (!authToken || prompt.seller !== authToken) {
       return NextResponse.json({ error: 'You do not have permission to delete this prompt' }, { status: 403 });
     }
 
@@ -66,7 +66,8 @@ export async function PUT(
     const prompt = await Prompt.findById(id);
     if (!prompt) return NextResponse.json({ error: 'Prompt not found' }, { status: 404 });
 
-    if (prompt.seller !== 'Global_Engineer') {
+    const authToken = req.cookies.get('auth_token')?.value;
+    if (!authToken || prompt.seller !== authToken) {
       return NextResponse.json({ error: 'You do not have permission to edit this prompt' }, { status: 403 });
     }
 

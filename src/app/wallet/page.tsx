@@ -22,6 +22,7 @@ const COIN_PACKAGES = [
 ];
 
 export default function WalletPage() {
+  const [user, setUser] = useState<any>(null);
   const [balance, setBalance] = useState<number>(0);
 
   const fetchBalance = async () => {
@@ -29,8 +30,11 @@ export default function WalletPage() {
       const res = await fetch("/api/user/profile");
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
-      if (data && typeof data.coins === "number") {
-        setBalance(data.coins);
+      if (data) {
+        setUser(data);
+        if (typeof data.coins === "number") {
+          setBalance(data.coins);
+        }
       }
     } catch (e: any) {
       console.error("Failed to fetch balance:", e.message);
@@ -91,8 +95,8 @@ export default function WalletPage() {
           window.dispatchEvent(new Event("balanceUpdate"));
         },
         prefill: {
-          name: "Global Engineer",
-          email: "creator@promptvault.com",
+          name: user?.fullName || user?.username || "Vault Engineer",
+          email: user?.email || "engineer@vault.network",
         },
         theme: {
           color: "#38bdf8",
